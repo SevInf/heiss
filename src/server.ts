@@ -7,6 +7,7 @@ import Koa from 'koa';
 import route from 'koa-route';
 import koaStatic from 'koa-static';
 import koaWebsocket = require('koa-websocket');
+import * as WebSocket from 'ws';
 import { generateProxyMiddleware } from './generateProxyMiddleware';
 
 const enum MessageType {
@@ -23,8 +24,7 @@ const examplePath = path.resolve(__dirname, '..', 'example');
 const clientPath = path.resolve(__dirname, '..', 'client', 'client.mjs');
 
 class Server {
-    // TODO: websocket type
-    private sockets: Set<any>;
+    private sockets: Set<WebSocket>;
     private app: koaWebsocket.App;
 
     constructor() {

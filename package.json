@@ -31,6 +31,7 @@
     "@types/koa-websocket": "^5.0.2",
     "@types/node": "^8.10.26",
     "@types/sane": "^2.0.0",
+    "@types/ws": "^6.0.0",
     "jest": "^23.5.0",
     "prettier": "^1.14.2",
     "ts-jest": "^23.1.3",
