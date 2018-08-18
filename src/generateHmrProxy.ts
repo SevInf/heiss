@@ -76,7 +76,7 @@ class HMRProxyGenerator {
         lines.push(`} from '${this.originalUrl}?mtime=0';`);
         lines.push();
         // TODO: deconflict client variable
-        lines.push('import { client } from "/hmr-client.mjs";');
+        lines.push('import { client } from "/@hmr";');
 
         for (const name of this.proxiedExports) {
             lines.push(`let _${name} = ${name};`);

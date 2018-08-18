@@ -5,7 +5,7 @@ class HMRClient {
     }
 
     connect() {
-        const websocket = new WebSocket('ws://localhost:8080/__hmr');
+        const websocket = new WebSocket('ws://localhost:8080/@hmr/socket');
         websocket.addEventListener('message', event => {
             const parsed = JSON.parse(event.data);
             switch (parsed.type) {

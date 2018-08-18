@@ -1,5 +1,6 @@
 'use strict';
 
+import * as fs from 'fs-extra';
 import * as path from 'path';
 import sane = require('sane');
 import Koa from 'koa';
@@ -18,6 +19,9 @@ interface Message {
     mtime: number;
 }
 
+const examplePath = path.resolve(__dirname, '..', 'example');
+const clientPath = path.resolve(__dirname, '..', 'client', 'client.mjs');
+
 class Server {
     // TODO: websocket type
     private sockets: Set<any>;
@@ -29,8 +33,14 @@ class Server {
     }
 
     async start() {
+        this.app.use(
+            route.get('/@hmr', context => {
+                context.response.type = 'application/javascript';
+                context.response.body = fs.createReadStream(clientPath);
+            })
+        );
         this.app.ws.use(
-            route.all('/__hmr', context => {
+            route.all('/@hmr/socket', context => {
                 const websocket = (context as koaWebsocket.MiddlewareContext).websocket;
                 this.sockets.add(websocket);
                 websocket.on('close', () => {
@@ -39,13 +49,11 @@ class Server {
                 });
             })
         );
-
-        const staticPath = path.resolve(__dirname, '..', 'static');
-        this.app.use(generateProxyMiddleware({ rootPath: staticPath }));
-        this.app.use(koaStatic(staticPath));
+        this.app.use(generateProxyMiddleware({ rootPath: examplePath }));
+        this.app.use(koaStatic(examplePath));
         await this.app.listen(8080);
 
-        const watcher = sane(staticPath);
+        const watcher = sane(examplePath);
         watcher.on('change', (filepath, root, stat) => {
             this.broadcast({
                 type: MessageType.CHANGE,
