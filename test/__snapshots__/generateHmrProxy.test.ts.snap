@@ -11,8 +11,11 @@ export {
     client1 as client
 };
 
-client0.registerModule(\\"/client-named-export.mjs\\", (updated) => {
-    client1 = updated.client;
+client0.registerModule(
+    \\"/client-named-export.mjs\\",
+    [\\"client\\"],
+    (updated) => {
+        client1 = updated.client;
 });"
 `;
 
@@ -27,8 +30,11 @@ export {
     _default0 as default
 };
 
-client.registerModule(\\"/default-export.mjs\\", (updated) => {
-    _default0 = updated.default;
+client.registerModule(
+    \\"/default-export.mjs\\",
+    [\\"default\\"],
+    (updated) => {
+        _default0 = updated.default;
 });"
 `;
 
@@ -46,9 +52,12 @@ export {
     _default00 as _default
 };
 
-client.registerModule(\\"/default-export-conflict.mjs\\", (updated) => {
-    _default1 = updated.default;
-    _default00 = updated._default;
+client.registerModule(
+    \\"/default-export-conflict.mjs\\",
+    [\\"default\\",\\"_default\\"],
+    (updated) => {
+        _default1 = updated.default;
+        _default00 = updated._default;
 });"
 `;
 
@@ -69,10 +78,13 @@ export {
     c0 as c
 };
 
-client.registerModule(\\"/multiple-named-exports.mjs\\", (updated) => {
-    a0 = updated.a;
-    b0 = updated.b;
-    c0 = updated.c;
+client.registerModule(
+    \\"/multiple-named-exports.mjs\\",
+    [\\"a\\",\\"b\\",\\"c\\"],
+    (updated) => {
+        a0 = updated.a;
+        b0 = updated.b;
+        c0 = updated.c;
 });"
 `;
 
@@ -87,8 +99,11 @@ export {
     C0 as C
 };
 
-client.registerModule(\\"/named-class-export.js\\", (updated) => {
-    C0 = updated.C;
+client.registerModule(
+    \\"/named-class-export.js\\",
+    [\\"C\\"],
+    (updated) => {
+        C0 = updated.C;
 });"
 `;
 
@@ -112,11 +127,14 @@ export {
     a20 as a2
 };
 
-client.registerModule(\\"/named-conflicts.mjs\\", (updated) => {
-    a3 = updated.a;
-    a00 = updated.a0;
-    a10 = updated.a1;
-    a20 = updated.a2;
+client.registerModule(
+    \\"/named-conflicts.mjs\\",
+    [\\"a\\",\\"a0\\",\\"a1\\",\\"a2\\"],
+    (updated) => {
+        a3 = updated.a;
+        a00 = updated.a0;
+        a10 = updated.a1;
+        a20 = updated.a2;
 });"
 `;
 
@@ -131,8 +149,11 @@ export {
     b0 as b
 };
 
-client.registerModule(\\"/named-export-alias.mjs\\", (updated) => {
-    b0 = updated.b;
+client.registerModule(
+    \\"/named-export-alias.mjs\\",
+    [\\"b\\"],
+    (updated) => {
+        b0 = updated.b;
 });"
 `;
 
@@ -147,8 +168,11 @@ export {
     f0 as f
 };
 
-client.registerModule(\\"/named-function-declaration.mjs\\", (updated) => {
-    f0 = updated.f;
+client.registerModule(
+    \\"/named-function-declaration.mjs\\",
+    [\\"f\\"],
+    (updated) => {
+        f0 = updated.f;
 });"
 `;
 
@@ -169,10 +193,13 @@ export {
     c0 as c
 };
 
-client.registerModule(\\"/named-multiple-var-declarations.mjs\\", (updated) => {
-    a0 = updated.a;
-    b0 = updated.b;
-    c0 = updated.c;
+client.registerModule(
+    \\"/named-multiple-var-declarations.mjs\\",
+    [\\"a\\",\\"b\\",\\"c\\"],
+    (updated) => {
+        a0 = updated.a;
+        b0 = updated.b;
+        c0 = updated.c;
 });"
 `;
 
@@ -187,8 +214,11 @@ export {
     a0 as a
 };
 
-client.registerModule(\\"/named-single-export.mjs\\", (updated) => {
-    a0 = updated.a;
+client.registerModule(
+    \\"/named-single-export.mjs\\",
+    [\\"a\\"],
+    (updated) => {
+        a0 = updated.a;
 });"
 `;
 
@@ -203,8 +233,11 @@ export {
     a0 as a
 };
 
-client.registerModule(\\"/named-single-var-declaration.mjs\\", (updated) => {
-    a0 = updated.a;
+client.registerModule(
+    \\"/named-single-var-declaration.mjs\\",
+    [\\"a\\"],
+    (updated) => {
+        a0 = updated.a;
 });"
 `;
 

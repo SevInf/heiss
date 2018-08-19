@@ -1,6 +1,6 @@
 class HMRClient {
     constructor() {
-        this.listeners = new Map();
+        this.modules = new Map();
         this.updateListener = null;
     }
 
@@ -17,28 +17,48 @@ class HMRClient {
     }
 
     async check({ url, mtime }) {
-        if (!this.listeners.has(url)) {
-            window.location.reload();
+        const module = this.modules.get(url);
+        if (!module) {
+            reloadPage();
             return;
         }
-        const updatedModule = await import(`${url}?mtime=${mtime}`);
-        this.listeners.get(url)(updatedModule);
+        const updatedExports = await import(`${url}?mtime=${mtime}`);
+        if (exportsChanged(module.exportNames, Object.keys(updatedExports))) {
+            reloadPage();
+            return;
+        }
 
-        // TODO: reload when exports change
+        module.update(updatedExports);
+
         if (!this.updateListener) {
-            window.location.reload();
+            reloadPage();
+            return;
         }
 
         this.updateListener();
     }
 
-    registerModule(url, callback) {
-        this.listeners.set(url, callback);
+    registerModule(url, exportNames, update) {
+        this.modules.set(url, {
+            exportNames,
+            update
+        });
     }
 
     onUpdate(callback) {
         this.updateListener = callback;
     }
+}
+
+function reloadPage() {
+    window.location.reload();
+}
+
+function exportsChanged(originalExports, newExports) {
+    if (originalExports.length !== newExports.length) {
+        return true;
+    }
+    return !originalExports.every(name => newExports.includes(name));
 }
 
 const client = new HMRClient();

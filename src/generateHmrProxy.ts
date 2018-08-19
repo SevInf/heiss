@@ -74,23 +74,25 @@ class HMRProxyGenerator {
     }
 
     private generateProxyModule(): string {
+        const exportNames = [];
         const imports = [];
         const assignments = [];
         const reexports = [];
         const reassignments = [];
         let clientVarName = this.getUniqueName('client');
 
-        for (const [name, alias] of this.proxiedExports) {
-            if (name === alias) {
-                imports.push(`    ${name}`);
+        for (const [proxiedName, importAlias] of this.proxiedExports) {
+            exportNames.push(proxiedName);
+            if (proxiedName === importAlias) {
+                imports.push(`    ${proxiedName}`);
             } else {
-                imports.push(`    ${name} as ${alias}`);
+                imports.push(`    ${proxiedName} as ${importAlias}`);
             }
 
-            const varName = this.getUniqueName(alias);
-            assignments.push(`let ${varName} = ${alias};`);
-            reexports.push(`    ${varName} as ${name}`);
-            reassignments.push(`    ${varName} = updated.${name};`);
+            const localVariableName = this.getUniqueName(importAlias);
+            assignments.push(`let ${localVariableName} = ${importAlias};`);
+            reexports.push(`    ${localVariableName} as ${proxiedName}`);
+            reassignments.push(`        ${localVariableName} = updated.${proxiedName};`);
         }
 
         return [
@@ -104,7 +106,10 @@ class HMRProxyGenerator {
             reexports.join(',\n'),
             '};',
             '',
-            `${clientVarName}.registerModule("${this.originalUrl}", (updated) => {`,
+            `${clientVarName}.registerModule(`,
+            `    "${this.originalUrl}",`,
+            `    ${JSON.stringify(exportNames)},`,
+            `    (updated) => {`,
             reassignments.join('\n'),
             '});'
         ].join('\n');
