@@ -9,9 +9,11 @@ import {
 
 class HMRProxyGenerator {
     private source: string;
-    private proxiedExports: Array<string> = [];
-    private usedNames: Set<string> = new Set();
     private originalUrl: string;
+
+    // map from export name to alias
+    private proxiedExports: Map<string, string> = new Map();
+    private usedNames: Set<string> = new Set();
 
     constructor(source: string, originalUrl: string) {
         this.source = source;
@@ -24,11 +26,11 @@ class HMRProxyGenerator {
             if (statement.type === 'ExportNamedDeclaration') {
                 this.proxyNamedDeclaration(statement);
             } else if (statement.type === 'ExportDefaultDeclaration') {
-                this.proxyName('default');
+                this.proxyName('default', '_default');
             }
         }
 
-        if (this.proxiedExports.length === 0) {
+        if (this.proxiedExports.size === 0) {
             return this.source;
         }
         return this.generateProxyModule();
@@ -63,17 +65,24 @@ class HMRProxyGenerator {
         }
     }
 
-    private proxyName(name: string) {
-        this.usedNames.add(name);
-        this.proxiedExports.push(name);
+    private proxyName(name: string, alias: string = name) {
+        if (this.usedNames.has(alias)) {
+            alias = this.getUniqueName(alias);
+        }
+        this.usedNames.add(alias);
+        this.proxiedExports.set(name, alias);
     }
 
     private generateProxyModule(): string {
         // TODO: default is reserverd word
         const lines = [];
         lines.push('import {');
-        for (const name of this.proxiedExports) {
-            lines.push(`    ${name}`);
+        for (const [name, alias] of this.proxiedExports) {
+            if (name === alias) {
+                lines.push(`    ${name},`);
+            } else {
+                lines.push(`    ${name} as ${alias},`);
+            }
         }
         lines.push(`} from '${this.originalUrl}?mtime=0';`);
         lines.push();
@@ -81,24 +90,24 @@ class HMRProxyGenerator {
         lines.push(`import { ${clientVarName} } from "/@hmr";`);
 
         const proxyVarNames: Map<string, string> = new Map();
-        for (const name of this.proxiedExports) {
-            const varName = this.getUniqueName(name);
-            proxyVarNames.set(name, varName);
-            lines.push(`let ${varName} = ${name};`);
+        for (const [, alias] of this.proxiedExports) {
+            const varName = this.getUniqueName(alias);
+            proxyVarNames.set(alias, varName);
+            lines.push(`let ${varName} = ${alias};`);
         }
         lines.push('');
         lines.push('export {');
 
-        for (const name of this.proxiedExports) {
-            lines.push(`    ${proxyVarNames.get(name)} as ${name}`);
+        for (const [name, alias] of this.proxiedExports) {
+            lines.push(`    ${proxyVarNames.get(alias)} as ${name},`);
         }
 
         lines.push('};');
         lines.push('');
 
         lines.push(`${clientVarName}.registerModule("${this.originalUrl}", (updated) => {`);
-        for (const name of this.proxiedExports) {
-            const varName = proxyVarNames.get(name);
+        for (const [name, alias] of this.proxiedExports) {
+            const varName = proxyVarNames.get(alias);
             lines.push(`    ${varName} = updated.${name};`);
         }
         lines.push('});');

@@ -2,13 +2,13 @@
 
 exports[`generateHmrProxy client-named-export 1`] = `
 "import {
-    client
+    client,
 } from '/client-named-export.mjs?mtime=0';
 import { client0 } from \\"/@hmr\\";
 let client1 = client;
 
 export {
-    client1 as client
+    client1 as client,
 };
 
 client0.registerModule(\\"/client-named-export.mjs\\", (updated) => {
@@ -18,25 +18,45 @@ client0.registerModule(\\"/client-named-export.mjs\\", (updated) => {
 
 exports[`generateHmrProxy default-export 1`] = `
 "import {
-    default
+    default as _default,
 } from '/default-export.mjs?mtime=0';
 import { client } from \\"/@hmr\\";
-let default0 = default;
+let _default0 = _default;
 
 export {
-    default0 as default
+    _default0 as default,
 };
 
 client.registerModule(\\"/default-export.mjs\\", (updated) => {
-    default0 = updated.default;
+    _default0 = updated.default;
+});"
+`;
+
+exports[`generateHmrProxy default-export-conflict 1`] = `
+"import {
+    default as _default,
+    _default as _default0,
+} from '/default-export-conflict.mjs?mtime=0';
+import { client } from \\"/@hmr\\";
+let _default1 = _default;
+let _default00 = _default0;
+
+export {
+    _default1 as default,
+    _default00 as _default,
+};
+
+client.registerModule(\\"/default-export-conflict.mjs\\", (updated) => {
+    _default1 = updated.default;
+    _default00 = updated._default;
 });"
 `;
 
 exports[`generateHmrProxy multiple-named-exports 1`] = `
 "import {
-    a
-    b
-    c
+    a,
+    b,
+    c,
 } from '/multiple-named-exports.mjs?mtime=0';
 import { client } from \\"/@hmr\\";
 let a0 = a;
@@ -44,9 +64,9 @@ let b0 = b;
 let c0 = c;
 
 export {
-    a0 as a
-    b0 as b
-    c0 as c
+    a0 as a,
+    b0 as b,
+    c0 as c,
 };
 
 client.registerModule(\\"/multiple-named-exports.mjs\\", (updated) => {
@@ -58,13 +78,13 @@ client.registerModule(\\"/multiple-named-exports.mjs\\", (updated) => {
 
 exports[`generateHmrProxy named-class-export.js 1`] = `
 "import {
-    C
+    C,
 } from '/named-class-export.js?mtime=0';
 import { client } from \\"/@hmr\\";
 let C0 = C;
 
 export {
-    C0 as C
+    C0 as C,
 };
 
 client.registerModule(\\"/named-class-export.js\\", (updated) => {
@@ -74,10 +94,10 @@ client.registerModule(\\"/named-class-export.js\\", (updated) => {
 
 exports[`generateHmrProxy named-conflicts 1`] = `
 "import {
-    a
-    a0
-    a1
-    a2
+    a,
+    a0,
+    a1,
+    a2,
 } from '/named-conflicts.mjs?mtime=0';
 import { client } from \\"/@hmr\\";
 let a3 = a;
@@ -86,10 +106,10 @@ let a10 = a1;
 let a20 = a2;
 
 export {
-    a3 as a
-    a00 as a0
-    a10 as a1
-    a20 as a2
+    a3 as a,
+    a00 as a0,
+    a10 as a1,
+    a20 as a2,
 };
 
 client.registerModule(\\"/named-conflicts.mjs\\", (updated) => {
@@ -102,13 +122,13 @@ client.registerModule(\\"/named-conflicts.mjs\\", (updated) => {
 
 exports[`generateHmrProxy named-export-alias 1`] = `
 "import {
-    b
+    b,
 } from '/named-export-alias.mjs?mtime=0';
 import { client } from \\"/@hmr\\";
 let b0 = b;
 
 export {
-    b0 as b
+    b0 as b,
 };
 
 client.registerModule(\\"/named-export-alias.mjs\\", (updated) => {
@@ -118,13 +138,13 @@ client.registerModule(\\"/named-export-alias.mjs\\", (updated) => {
 
 exports[`generateHmrProxy named-function-declaration 1`] = `
 "import {
-    f
+    f,
 } from '/named-function-declaration.mjs?mtime=0';
 import { client } from \\"/@hmr\\";
 let f0 = f;
 
 export {
-    f0 as f
+    f0 as f,
 };
 
 client.registerModule(\\"/named-function-declaration.mjs\\", (updated) => {
@@ -134,9 +154,9 @@ client.registerModule(\\"/named-function-declaration.mjs\\", (updated) => {
 
 exports[`generateHmrProxy named-multiple-var-declarations 1`] = `
 "import {
-    a
-    b
-    c
+    a,
+    b,
+    c,
 } from '/named-multiple-var-declarations.mjs?mtime=0';
 import { client } from \\"/@hmr\\";
 let a0 = a;
@@ -144,9 +164,9 @@ let b0 = b;
 let c0 = c;
 
 export {
-    a0 as a
-    b0 as b
-    c0 as c
+    a0 as a,
+    b0 as b,
+    c0 as c,
 };
 
 client.registerModule(\\"/named-multiple-var-declarations.mjs\\", (updated) => {
@@ -158,13 +178,13 @@ client.registerModule(\\"/named-multiple-var-declarations.mjs\\", (updated) => {
 
 exports[`generateHmrProxy named-single-export 1`] = `
 "import {
-    a
+    a,
 } from '/named-single-export.mjs?mtime=0';
 import { client } from \\"/@hmr\\";
 let a0 = a;
 
 export {
-    a0 as a
+    a0 as a,
 };
 
 client.registerModule(\\"/named-single-export.mjs\\", (updated) => {
@@ -174,13 +194,13 @@ client.registerModule(\\"/named-single-export.mjs\\", (updated) => {
 
 exports[`generateHmrProxy named-single-var-declaration 1`] = `
 "import {
-    a
+    a,
 } from '/named-single-var-declaration.mjs?mtime=0';
 import { client } from \\"/@hmr\\";
 let a0 = a;
 
 export {
-    a0 as a
+    a0 as a,
 };
 
 client.registerModule(\\"/named-single-var-declaration.mjs\\", (updated) => {

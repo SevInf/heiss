@@ -1,5 +1,6 @@
 import { generateHmrProxy } from '../src/generateHmrProxy';
 import { readdirSync, readFileSync } from 'fs';
+import { parse } from 'acorn';
 import * as path from 'path';
 
 describe('generateHmrProxy', () => {
@@ -9,7 +10,10 @@ describe('generateHmrProxy', () => {
     for (const fixture of fixtures) {
         test(path.basename(fixture, '.mjs'), () => {
             const source = readFileSync(path.join(fixturesBasePath, fixture), 'utf8');
-            expect(generateHmrProxy(source, `/${fixture}`)).toMatchSnapshot();
+            const proxy = generateHmrProxy(source, `/${fixture}`);
+
+            expect(() => parse(proxy, { sourceType: 'module' })).not.toThrow();
+            expect(proxy).toMatchSnapshot();
         });
     }
-})
+});
