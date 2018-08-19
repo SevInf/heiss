@@ -74,45 +74,40 @@ class HMRProxyGenerator {
     }
 
     private generateProxyModule(): string {
-        // TODO: default is reserverd word
-        const lines = [];
-        lines.push('import {');
+        const imports = [];
+        const assignments = [];
+        const reexports = [];
+        const reassignments = [];
+        let clientVarName = this.getUniqueName('client');
+
         for (const [name, alias] of this.proxiedExports) {
             if (name === alias) {
-                lines.push(`    ${name},`);
+                imports.push(`    ${name}`);
             } else {
-                lines.push(`    ${name} as ${alias},`);
+                imports.push(`    ${name} as ${alias}`);
             }
-        }
-        lines.push(`} from '${this.originalUrl}?mtime=0';`);
-        lines.push();
-        const clientVarName = this.getUniqueName('client');
-        lines.push(`import { ${clientVarName} } from "/@hmr";`);
 
-        const proxyVarNames: Map<string, string> = new Map();
-        for (const [, alias] of this.proxiedExports) {
             const varName = this.getUniqueName(alias);
-            proxyVarNames.set(alias, varName);
-            lines.push(`let ${varName} = ${alias};`);
-        }
-        lines.push('');
-        lines.push('export {');
-
-        for (const [name, alias] of this.proxiedExports) {
-            lines.push(`    ${proxyVarNames.get(alias)} as ${name},`);
+            assignments.push(`let ${varName} = ${alias};`);
+            reexports.push(`    ${varName} as ${name}`);
+            reassignments.push(`    ${varName} = updated.${name};`);
         }
 
-        lines.push('};');
-        lines.push('');
-
-        lines.push(`${clientVarName}.registerModule("${this.originalUrl}", (updated) => {`);
-        for (const [name, alias] of this.proxiedExports) {
-            const varName = proxyVarNames.get(alias);
-            lines.push(`    ${varName} = updated.${name};`);
-        }
-        lines.push('});');
-
-        return lines.join('\n');
+        return [
+            'import {',
+            imports.join(',\n'),
+            `} from '${this.originalUrl}?mtime=0';`,
+            `import { ${clientVarName} } from "/@hmr";`,
+            assignments.join('\n'),
+            '',
+            'export {',
+            reexports.join(',\n'),
+            '};',
+            '',
+            `${clientVarName}.registerModule("${this.originalUrl}", (updated) => {`,
+            reassignments.join('\n'),
+            '});'
+        ].join('\n');
     }
 
     private getUniqueName(desiredName: string): string {
