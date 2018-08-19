@@ -1,18 +1,34 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`generateHmrProxy client-named-export 1`] = `
+"import {
+    client
+} from '/client-named-export.mjs?mtime=0';
+import { client0 } from \\"/@hmr\\";
+let client1 = client;
+
+export {
+    client1 as client
+};
+
+client0.registerModule(\\"/client-named-export.mjs\\", (updated) => {
+    client1 = updated.client;
+});"
+`;
+
 exports[`generateHmrProxy default-export 1`] = `
 "import {
     default
 } from '/default-export.mjs?mtime=0';
 import { client } from \\"/@hmr\\";
-let _default = default;
+let default0 = default;
 
 export {
-    _default as default
+    default0 as default
 };
 
 client.registerModule(\\"/default-export.mjs\\", (updated) => {
-    _default = updated.default;
+    default0 = updated.default;
 });"
 `;
 
@@ -23,20 +39,20 @@ exports[`generateHmrProxy multiple-named-exports 1`] = `
     c
 } from '/multiple-named-exports.mjs?mtime=0';
 import { client } from \\"/@hmr\\";
-let _a = a;
-let _b = b;
-let _c = c;
+let a0 = a;
+let b0 = b;
+let c0 = c;
 
 export {
-    _a as a
-    _b as b
-    _c as c
+    a0 as a
+    b0 as b
+    c0 as c
 };
 
 client.registerModule(\\"/multiple-named-exports.mjs\\", (updated) => {
-    _a = updated.a;
-    _b = updated.b;
-    _c = updated.c;
+    a0 = updated.a;
+    b0 = updated.b;
+    c0 = updated.c;
 });"
 `;
 
@@ -45,14 +61,42 @@ exports[`generateHmrProxy named-class-export.js 1`] = `
     C
 } from '/named-class-export.js?mtime=0';
 import { client } from \\"/@hmr\\";
-let _C = C;
+let C0 = C;
 
 export {
-    _C as C
+    C0 as C
 };
 
 client.registerModule(\\"/named-class-export.js\\", (updated) => {
-    _C = updated.C;
+    C0 = updated.C;
+});"
+`;
+
+exports[`generateHmrProxy named-conflicts 1`] = `
+"import {
+    a
+    a0
+    a1
+    a2
+} from '/named-conflicts.mjs?mtime=0';
+import { client } from \\"/@hmr\\";
+let a3 = a;
+let a00 = a0;
+let a10 = a1;
+let a20 = a2;
+
+export {
+    a3 as a
+    a00 as a0
+    a10 as a1
+    a20 as a2
+};
+
+client.registerModule(\\"/named-conflicts.mjs\\", (updated) => {
+    a3 = updated.a;
+    a00 = updated.a0;
+    a10 = updated.a1;
+    a20 = updated.a2;
 });"
 `;
 
@@ -61,14 +105,14 @@ exports[`generateHmrProxy named-export-alias 1`] = `
     b
 } from '/named-export-alias.mjs?mtime=0';
 import { client } from \\"/@hmr\\";
-let _b = b;
+let b0 = b;
 
 export {
-    _b as b
+    b0 as b
 };
 
 client.registerModule(\\"/named-export-alias.mjs\\", (updated) => {
-    _b = updated.b;
+    b0 = updated.b;
 });"
 `;
 
@@ -77,14 +121,14 @@ exports[`generateHmrProxy named-function-declaration 1`] = `
     f
 } from '/named-function-declaration.mjs?mtime=0';
 import { client } from \\"/@hmr\\";
-let _f = f;
+let f0 = f;
 
 export {
-    _f as f
+    f0 as f
 };
 
 client.registerModule(\\"/named-function-declaration.mjs\\", (updated) => {
-    _f = updated.f;
+    f0 = updated.f;
 });"
 `;
 
@@ -95,20 +139,20 @@ exports[`generateHmrProxy named-multiple-var-declarations 1`] = `
     c
 } from '/named-multiple-var-declarations.mjs?mtime=0';
 import { client } from \\"/@hmr\\";
-let _a = a;
-let _b = b;
-let _c = c;
+let a0 = a;
+let b0 = b;
+let c0 = c;
 
 export {
-    _a as a
-    _b as b
-    _c as c
+    a0 as a
+    b0 as b
+    c0 as c
 };
 
 client.registerModule(\\"/named-multiple-var-declarations.mjs\\", (updated) => {
-    _a = updated.a;
-    _b = updated.b;
-    _c = updated.c;
+    a0 = updated.a;
+    b0 = updated.b;
+    c0 = updated.c;
 });"
 `;
 
@@ -117,14 +161,14 @@ exports[`generateHmrProxy named-single-export 1`] = `
     a
 } from '/named-single-export.mjs?mtime=0';
 import { client } from \\"/@hmr\\";
-let _a = a;
+let a0 = a;
 
 export {
-    _a as a
+    a0 as a
 };
 
 client.registerModule(\\"/named-single-export.mjs\\", (updated) => {
-    _a = updated.a;
+    a0 = updated.a;
 });"
 `;
 
@@ -133,14 +177,14 @@ exports[`generateHmrProxy named-single-var-declaration 1`] = `
     a
 } from '/named-single-var-declaration.mjs?mtime=0';
 import { client } from \\"/@hmr\\";
-let _a = a;
+let a0 = a;
 
 export {
-    _a as a
+    a0 as a
 };
 
 client.registerModule(\\"/named-single-var-declaration.mjs\\", (updated) => {
-    _a = updated.a;
+    a0 = updated.a;
 });"
 `;
 

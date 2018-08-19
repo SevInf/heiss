@@ -10,6 +10,7 @@ import {
 class HMRProxyGenerator {
     private source: string;
     private proxiedExports: Array<string> = [];
+    private usedNames: Set<string> = new Set();
     private originalUrl: string;
 
     constructor(source: string, originalUrl: string) {
@@ -63,6 +64,7 @@ class HMRProxyGenerator {
     }
 
     private proxyName(name: string) {
+        this.usedNames.add(name);
         this.proxiedExports.push(name);
     }
 
@@ -75,29 +77,49 @@ class HMRProxyGenerator {
         }
         lines.push(`} from '${this.originalUrl}?mtime=0';`);
         lines.push();
-        // TODO: deconflict client variable
-        lines.push('import { client } from "/@hmr";');
+        const clientVarName = this.getUniqueName('client');
+        lines.push(`import { ${clientVarName} } from "/@hmr";`);
 
+        const proxyVarNames: Map<string, string> = new Map();
         for (const name of this.proxiedExports) {
-            lines.push(`let _${name} = ${name};`);
+            const varName = this.getUniqueName(name);
+            proxyVarNames.set(name, varName);
+            lines.push(`let ${varName} = ${name};`);
         }
         lines.push('');
         lines.push('export {');
 
         for (const name of this.proxiedExports) {
-            lines.push(`    _${name} as ${name}`);
+            lines.push(`    ${proxyVarNames.get(name)} as ${name}`);
         }
 
         lines.push('};');
         lines.push('');
 
-        lines.push(`client.registerModule("${this.originalUrl}", (updated) => {`);
+        lines.push(`${clientVarName}.registerModule("${this.originalUrl}", (updated) => {`);
         for (const name of this.proxiedExports) {
-            lines.push(`    _${name} = updated.${name};`);
+            const varName = proxyVarNames.get(name);
+            lines.push(`    ${varName} = updated.${name};`);
         }
         lines.push('});');
 
         return lines.join('\n');
+    }
+
+    private getUniqueName(desiredName: string): string {
+        if (!this.usedNames.has(desiredName)) {
+            this.usedNames.add(desiredName);
+            return desiredName;
+        }
+
+        let idx = 0;
+        let name;
+        do {
+            name = `${desiredName}${idx++}`;
+        } while (this.usedNames.has(name));
+
+        this.usedNames.add(name);
+        return name;
     }
 }
 
