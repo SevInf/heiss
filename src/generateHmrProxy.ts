@@ -39,9 +39,9 @@ class HMRProxyGenerator {
         }
 
         if (this.proxiedExports.size === 0) {
-            return this.source;
+            return this.generateNoExportsProxy();
         }
-        return this.generateProxyModule();
+        return this.generateExportsProxy();
     }
 
     private resolveImport(relativeImport: string): string {
@@ -85,7 +85,20 @@ class HMRProxyGenerator {
         this.proxiedExports.set(name, alias);
     }
 
-    private generateProxyModule(): string {
+    private generateNoExportsProxy(): string {
+        return [
+            `import "${this.originalUrl}?mtime=0";`,
+            `import { client } from "/@hmr";`,
+            '',
+            'client.registerModule(',
+            `    "${this.originalUrl}",`,
+            '    [],',
+            `    ${JSON.stringify(Array.from(this.imports))}`,
+            ');'
+        ].join('\n');
+    }
+
+    private generateExportsProxy(): string {
         const exportNames = [];
         const imports = [];
         const assignments = [];

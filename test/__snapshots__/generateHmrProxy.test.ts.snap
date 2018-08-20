@@ -68,13 +68,25 @@ client.registerModule(
 `;
 
 exports[`generateHmrProxy dynamic-imports 1`] = `
-"import('./a').then(() => {});
-"
+"import \\"http://example.com/dynamic-imports.mjs?mtime=0\\";
+import { client } from \\"/@hmr\\";
+
+client.registerModule(
+    \\"http://example.com/dynamic-imports.mjs\\",
+    [],
+    []
+);"
 `;
 
 exports[`generateHmrProxy import-meta 1`] = `
-"import.meta.url;
-"
+"import \\"http://example.com/import-meta.mjs?mtime=0\\";
+import { client } from \\"/@hmr\\";
+
+client.registerModule(
+    \\"http://example.com/import-meta.mjs\\",
+    [],
+    []
+);"
 `;
 
 exports[`generateHmrProxy imports 1`] = `
@@ -95,6 +107,17 @@ client.registerModule(
     (updated) => {
         a0 = updated.a;
     }
+);"
+`;
+
+exports[`generateHmrProxy imports-only 1`] = `
+"import \\"http://example.com/imports-only.mjs?mtime=0\\";
+import { client } from \\"/@hmr\\";
+
+client.registerModule(
+    \\"http://example.com/imports-only.mjs\\",
+    [],
+    [\\"http://example.com/a\\",\\"http://example.com/b\\",\\"http://example.com/c\\"]
 );"
 `;
 
@@ -295,6 +318,12 @@ client.registerModule(
 `;
 
 exports[`generateHmrProxy no-exports 1`] = `
-"const a = 1;
-"
+"import \\"http://example.com/no-exports.mjs?mtime=0\\";
+import { client } from \\"/@hmr\\";
+
+client.registerModule(
+    \\"http://example.com/no-exports.mjs\\",
+    [],
+    []
+);"
 `;

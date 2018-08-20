@@ -48,7 +48,9 @@ class HMRClient {
         if (exportsChanged(module.exportNames, Object.keys(updatedExports))) {
             return false;
         }
-        module.update(updatedExports);
+        if (typeof module.update === 'function') {
+            module.update(updatedExports);
+        }
         return true;
     }
 
