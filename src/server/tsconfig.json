@@ -1,0 +1,12 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "module": "commonjs",
+        "esModuleInterop": true,
+        "outDir": "../../lib/server",
+    },
+    "include": [
+        "../../typings/*.d.ts",
+        "*.ts"
+    ]
+}

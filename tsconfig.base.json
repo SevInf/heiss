@@ -1,0 +1,10 @@
+{
+    "compilerOptions": {
+        "target": "ESNext",
+        "strict": true,
+        "moduleResolution": "node",
+        "sourceMap": true,
+        "composite": true
+    },
+    "compileOnSave": true
+}

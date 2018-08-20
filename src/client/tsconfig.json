@@ -1,0 +1,14 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "module": "ESNext",
+        "lib" ["es2018", "dom"],
+        "outDir": "../../lib/client",
+    },
+    "include": [
+        "*.ts"
+    ],
+    "references": [
+        { "path": "../server" }
+    ]
+}

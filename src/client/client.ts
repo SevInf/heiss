@@ -1,26 +1,36 @@
+import { Message, MessageType } from '../server/message';
+
+type AcceptListener = () => void;
+type DisposeListener = () => void;
+type ModuleUpdater = (newExports: any) => void;
+
+interface Module {
+    exportNames: Array<string>;
+    update?: (newExports: any) => void;
+}
+
 class HMRClient {
-    constructor() {
-        this.modules = new Map();
-        this.acceptListeners = new Map();
-        this.disposeListeners = new Map();
-        // module graph where key is module url and
-        // value is a set of all the modules who import it
-        this.reverseModuleGraph = new Map();
-    }
+    private modules: Map<string, Module> = new Map();
+    private acceptListeners: Map<string, AcceptListener> = new Map();
+    private disposeListeners: Map<string, DisposeListener> = new Map();
+
+    // module graph where key is module url and
+    // value is a set of all the modules who import it
+    private reverseModuleGraph: Map<string, Set<string>> = new Map();
 
     connect() {
         const websocket = new WebSocket('ws://localhost:8080/@hmr/socket');
         websocket.addEventListener('message', event => {
             const parsed = JSON.parse(event.data);
             switch (parsed.type) {
-                case 'change':
+                case MessageType.CHANGE:
                     this.check(parsed);
                     break;
             }
         });
     }
 
-    async check({ url, mtime }) {
+    async check({ url, mtime }: Message) {
         const module = this.modules.get(url);
         if (!module) {
             // if module was not loaded, we don't need to reload anything
@@ -40,13 +50,18 @@ class HMRClient {
         }
 
         const acceptCallback = this.acceptListeners.get(toReload[toReload.length - 1]);
-        acceptCallback();
+        acceptCallback!();
     }
 
-    async reloadModule(url, mtime) {
+    private async reloadModule(url: string, mtime: number) {
         const module = this.modules.get(url);
-        if (this.disposeListeners.has(url)) {
-            this.disposeListeners.get(url)();
+        if (!module) {
+            return false;
+        }
+        const dispose = this.disposeListeners.get(url);
+        if (dispose) {
+            dispose();
+            this.disposeListeners.delete(url);
         }
         const updatedExports = await import(`${url}?mtime=${mtime}`);
         if (exportsChanged(module.exportNames, Object.keys(updatedExports))) {
@@ -58,7 +73,7 @@ class HMRClient {
         return true;
     }
 
-    findModulesForUpdate(changedModuleUrl, visited = new Set()) {
+    findModulesForUpdate(changedModuleUrl: string, visited: Set<string> = new Set()): string[] | null {
         if (visited.has(changedModuleUrl)) {
             return null;
         }
@@ -79,7 +94,7 @@ class HMRClient {
         return null;
     }
 
-    registerModule(url, exportNames, imports, update) {
+    registerModule(url: string, exportNames: Array<string>, imports: Array<string>, update?: ModuleUpdater) {
         for (const importName of imports) {
             this.registerModuleParent(importName, url);
         }
@@ -89,18 +104,20 @@ class HMRClient {
         });
     }
 
-    registerModuleParent(root, parent) {
-        if (!this.reverseModuleGraph.has(root)) {
-            this.reverseModuleGraph.set(root, new Set());
+    registerModuleParent(root: string, parent: string) {
+        let parents = this.reverseModuleGraph.get(root);
+        if (!parents) {
+            parents = new Set();
+            this.reverseModuleGraph.set(root, parents);
         }
-        this.reverseModuleGraph.get(root).add(parent);
+        parents.add(parent);
     }
 
-    accept(moduleUrl, callback) {
+    accept(moduleUrl: string, callback: AcceptListener) {
         this.acceptListeners.set(moduleUrl, callback);
     }
 
-    dispose(moduleUrl, callback) {
+    dispose(moduleUrl: string, callback: DisposeListener) {
         this.disposeListeners.set(moduleUrl, callback);
     }
 }
@@ -109,7 +126,7 @@ function reloadPage() {
     window.location.reload();
 }
 
-function exportsChanged(originalExports, newExports) {
+function exportsChanged(originalExports: string[], newExports: string[]): boolean {
     if (originalExports.length !== newExports.length) {
         return true;
     }
@@ -119,17 +136,17 @@ function exportsChanged(originalExports, newExports) {
 const client = new HMRClient();
 client.connect();
 
-function hot(moduleUrl) {
+function hot(moduleUrl: string) {
     const originalModuleUrl = getOriginalUrl(moduleUrl);
     return {
-        accept(dependecies, callback) {
+        accept(dependecies: string[], callback: AcceptListener) {
             for (const dependecy of dependecies) {
                 client.accept(new URL(dependecy, originalModuleUrl).href, callback);
             }
             return this;
         },
 
-        dispose(callback) {
+        dispose(callback: DisposeListener) {
             client.dispose(originalModuleUrl, callback);
             return this;
         },
@@ -141,7 +158,7 @@ function hot(moduleUrl) {
     };
 }
 
-function getOriginalUrl(url) {
+function getOriginalUrl(url: string): string {
     const urlObject = new URL(url);
     urlObject.searchParams.delete('mtime');
     return urlObject.href;

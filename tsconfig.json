@@ -1,16 +1,8 @@
 {
-    "compilerOptions": {
-        "module": "commonjs",
-        "esModuleInterop": true,
-        "target": "es6",
-        "strict": true,
-        "moduleResolution": "node",
-        "sourceMap": true,
-        "outDir": "lib"
-    },
-    "compileOnSave": true,
-    "include": [
-        "src/**/*.ts",
-        "typings/*.d.ts"
-    ]
+    "references": [
+        { "path": "./src/server" },
+        { "path": "./src/client" },
+    ],
+    "files": [],
+    "include": []
 }

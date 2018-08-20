@@ -7,7 +7,7 @@
   "author": "Sergey Tatarintsev <sergey@tatarintsev.me> (https://github.com/SevInf)",
   "license": "MIT",
   "scripts": {
-    "start": "tsc && node lib/server.js",
+    "start": "tsc --build && node lib/server/server.js",
     "test": "jest"
   },
   "dependencies": {
@@ -40,6 +40,11 @@
     "typescript": "^3.0.1"
   },
   "jest": {
+    "globals": {
+      "ts-jest": {
+        "tsConfigFile": "<rootDir>/test/tsconfig.json"
+      }
+    },
     "transform": {
       "^.+\\.ts$": "ts-jest"
     },

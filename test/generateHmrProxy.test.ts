@@ -1,8 +1,7 @@
-import { generateHmrProxy } from '../src/generateHmrProxy';
-import { parseModule } from '../src/parseModule';
+import { generateHmrProxy } from '../src/server/generateHmrProxy';
+import { parseModule } from '../src/server/parseModule';
 import { readdirSync, readFileSync } from 'fs';
 import * as path from 'path';
-import injectDynamicImportPlugin from 'acorn-dynamic-import/lib/inject';
 
 describe('generateHmrProxy', () => {
     const fixturesBasePath = path.join(__dirname, 'fixtures', 'generateHmrProxy');

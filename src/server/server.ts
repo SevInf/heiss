@@ -9,19 +9,10 @@ import koaStatic from 'koa-static';
 import koaWebsocket = require('koa-websocket');
 import * as WebSocket from 'ws';
 import { generateProxyMiddleware } from './generateProxyMiddleware';
+import { Message, MessageType } from './message';
 
-const enum MessageType {
-    CHANGE = 'change'
-}
-
-interface Message {
-    type: MessageType.CHANGE;
-    url: string;
-    mtime: number;
-}
-
-const examplePath = path.resolve(__dirname, '..', 'example');
-const clientPath = path.resolve(__dirname, '..', 'client', 'client.mjs');
+const examplePath = path.resolve(__dirname, '..', '..', 'example');
+const clientPath = path.resolve(__dirname, '..', 'client', 'client.js');
 
 class Server {
     private sockets: Set<WebSocket>;
