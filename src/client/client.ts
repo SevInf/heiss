@@ -73,7 +73,7 @@ class HMRClient {
         return true;
     }
 
-    findModulesForUpdate(changedModuleUrl: string, visited: Set<string> = new Set()): string[] | null {
+    private findModulesForUpdate(changedModuleUrl: string, visited: Set<string> = new Set()): string[] | null {
         if (visited.has(changedModuleUrl)) {
             return null;
         }
@@ -104,7 +104,7 @@ class HMRClient {
         });
     }
 
-    registerModuleParent(root: string, parent: string) {
+    private registerModuleParent(root: string, parent: string) {
         let parents = this.reverseModuleGraph.get(root);
         if (!parents) {
             parents = new Set();
