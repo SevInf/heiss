@@ -1,7 +1,8 @@
 import { generateHmrProxy } from '../src/generateHmrProxy';
+import { parseModule } from '../src/parseModule';
 import { readdirSync, readFileSync } from 'fs';
-import { parse } from 'acorn';
 import * as path from 'path';
+import injectDynamicImportPlugin from 'acorn-dynamic-import/lib/inject';
 
 describe('generateHmrProxy', () => {
     const fixturesBasePath = path.join(__dirname, 'fixtures', 'generateHmrProxy');
@@ -10,9 +11,9 @@ describe('generateHmrProxy', () => {
     for (const fixture of fixtures) {
         test(path.basename(fixture, '.mjs'), () => {
             const source = readFileSync(path.join(fixturesBasePath, fixture), 'utf8');
-            const proxy = generateHmrProxy(source, `/${fixture}`);
+            const proxy = generateHmrProxy(source, new URL(fixture, 'http://example.com'));
 
-            expect(() => parse(proxy, { sourceType: 'module' })).not.toThrow();
+            expect(() => parseModule(proxy)).not.toThrow();
             expect(proxy).toMatchSnapshot();
         });
     }

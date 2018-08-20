@@ -57,7 +57,8 @@ class Server {
         watcher.on('change', (filepath, root, stat) => {
             this.broadcast({
                 type: MessageType.CHANGE,
-                url: `/${filepath}`,
+                // TODO: generate from config
+                url: `http://localhost:8080/${filepath}`,
                 mtime: stat.mtimeMs
             });
         });

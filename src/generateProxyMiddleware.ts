@@ -33,6 +33,6 @@ export function generateProxyMiddleware(options: Options): Middleware {
         }
 
         context.response.set('Content-Type', 'application/javascript');
-        context.response.body = generateHmrProxy(content, context.request.url);
+        context.response.body = generateHmrProxy(content, context.request.URL);
     };
 }

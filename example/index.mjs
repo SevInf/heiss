@@ -1,8 +1,8 @@
 import { createText } from './createText.mjs';
-import { client } from '/@hmr';
+import { hot } from '/@hmr';
 
 createText();
 
-client.onUpdate(() => {
+hot(import.meta.url).accept(['./createText.mjs'], () => {
     createText();
 });

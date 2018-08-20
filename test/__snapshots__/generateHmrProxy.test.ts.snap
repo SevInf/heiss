@@ -3,7 +3,7 @@
 exports[`generateHmrProxy client-named-export 1`] = `
 "import {
     client
-} from '/client-named-export.mjs?mtime=0';
+} from 'http://example.com/client-named-export.mjs?mtime=0';
 import { client0 } from \\"/@hmr\\";
 let client1 = client;
 
@@ -12,17 +12,19 @@ export {
 };
 
 client0.registerModule(
-    \\"/client-named-export.mjs\\",
+    \\"http://example.com/client-named-export.mjs\\",
     [\\"client\\"],
+    [],
     (updated) => {
         client1 = updated.client;
-});"
+    }
+);"
 `;
 
 exports[`generateHmrProxy default-export 1`] = `
 "import {
     default as _default
-} from '/default-export.mjs?mtime=0';
+} from 'http://example.com/default-export.mjs?mtime=0';
 import { client } from \\"/@hmr\\";
 let _default0 = _default;
 
@@ -31,18 +33,20 @@ export {
 };
 
 client.registerModule(
-    \\"/default-export.mjs\\",
+    \\"http://example.com/default-export.mjs\\",
     [\\"default\\"],
+    [],
     (updated) => {
         _default0 = updated.default;
-});"
+    }
+);"
 `;
 
 exports[`generateHmrProxy default-export-conflict 1`] = `
 "import {
     default as _default,
     _default as _default0
-} from '/default-export-conflict.mjs?mtime=0';
+} from 'http://example.com/default-export-conflict.mjs?mtime=0';
 import { client } from \\"/@hmr\\";
 let _default1 = _default;
 let _default00 = _default0;
@@ -53,12 +57,45 @@ export {
 };
 
 client.registerModule(
-    \\"/default-export-conflict.mjs\\",
+    \\"http://example.com/default-export-conflict.mjs\\",
     [\\"default\\",\\"_default\\"],
+    [],
     (updated) => {
         _default1 = updated.default;
         _default00 = updated._default;
-});"
+    }
+);"
+`;
+
+exports[`generateHmrProxy dynamic-imports 1`] = `
+"import('./a').then(() => {});
+"
+`;
+
+exports[`generateHmrProxy import-meta 1`] = `
+"import.meta.url;
+"
+`;
+
+exports[`generateHmrProxy imports 1`] = `
+"import {
+    a
+} from 'http://example.com/imports.mjs?mtime=0';
+import { client } from \\"/@hmr\\";
+let a0 = a;
+
+export {
+    a0 as a
+};
+
+client.registerModule(
+    \\"http://example.com/imports.mjs\\",
+    [\\"a\\"],
+    [\\"http://example.com/a\\",\\"http://example.com/c\\",\\"http://example.com/d\\"],
+    (updated) => {
+        a0 = updated.a;
+    }
+);"
 `;
 
 exports[`generateHmrProxy multiple-named-exports 1`] = `
@@ -66,7 +103,7 @@ exports[`generateHmrProxy multiple-named-exports 1`] = `
     a,
     b,
     c
-} from '/multiple-named-exports.mjs?mtime=0';
+} from 'http://example.com/multiple-named-exports.mjs?mtime=0';
 import { client } from \\"/@hmr\\";
 let a0 = a;
 let b0 = b;
@@ -79,19 +116,21 @@ export {
 };
 
 client.registerModule(
-    \\"/multiple-named-exports.mjs\\",
+    \\"http://example.com/multiple-named-exports.mjs\\",
     [\\"a\\",\\"b\\",\\"c\\"],
+    [],
     (updated) => {
         a0 = updated.a;
         b0 = updated.b;
         c0 = updated.c;
-});"
+    }
+);"
 `;
 
 exports[`generateHmrProxy named-class-export.js 1`] = `
 "import {
     C
-} from '/named-class-export.js?mtime=0';
+} from 'http://example.com/named-class-export.js?mtime=0';
 import { client } from \\"/@hmr\\";
 let C0 = C;
 
@@ -100,11 +139,13 @@ export {
 };
 
 client.registerModule(
-    \\"/named-class-export.js\\",
+    \\"http://example.com/named-class-export.js\\",
     [\\"C\\"],
+    [],
     (updated) => {
         C0 = updated.C;
-});"
+    }
+);"
 `;
 
 exports[`generateHmrProxy named-conflicts 1`] = `
@@ -113,7 +154,7 @@ exports[`generateHmrProxy named-conflicts 1`] = `
     a0,
     a1,
     a2
-} from '/named-conflicts.mjs?mtime=0';
+} from 'http://example.com/named-conflicts.mjs?mtime=0';
 import { client } from \\"/@hmr\\";
 let a3 = a;
 let a00 = a0;
@@ -128,20 +169,22 @@ export {
 };
 
 client.registerModule(
-    \\"/named-conflicts.mjs\\",
+    \\"http://example.com/named-conflicts.mjs\\",
     [\\"a\\",\\"a0\\",\\"a1\\",\\"a2\\"],
+    [],
     (updated) => {
         a3 = updated.a;
         a00 = updated.a0;
         a10 = updated.a1;
         a20 = updated.a2;
-});"
+    }
+);"
 `;
 
 exports[`generateHmrProxy named-export-alias 1`] = `
 "import {
     b
-} from '/named-export-alias.mjs?mtime=0';
+} from 'http://example.com/named-export-alias.mjs?mtime=0';
 import { client } from \\"/@hmr\\";
 let b0 = b;
 
@@ -150,17 +193,19 @@ export {
 };
 
 client.registerModule(
-    \\"/named-export-alias.mjs\\",
+    \\"http://example.com/named-export-alias.mjs\\",
     [\\"b\\"],
+    [],
     (updated) => {
         b0 = updated.b;
-});"
+    }
+);"
 `;
 
 exports[`generateHmrProxy named-function-declaration 1`] = `
 "import {
     f
-} from '/named-function-declaration.mjs?mtime=0';
+} from 'http://example.com/named-function-declaration.mjs?mtime=0';
 import { client } from \\"/@hmr\\";
 let f0 = f;
 
@@ -169,11 +214,13 @@ export {
 };
 
 client.registerModule(
-    \\"/named-function-declaration.mjs\\",
+    \\"http://example.com/named-function-declaration.mjs\\",
     [\\"f\\"],
+    [],
     (updated) => {
         f0 = updated.f;
-});"
+    }
+);"
 `;
 
 exports[`generateHmrProxy named-multiple-var-declarations 1`] = `
@@ -181,7 +228,7 @@ exports[`generateHmrProxy named-multiple-var-declarations 1`] = `
     a,
     b,
     c
-} from '/named-multiple-var-declarations.mjs?mtime=0';
+} from 'http://example.com/named-multiple-var-declarations.mjs?mtime=0';
 import { client } from \\"/@hmr\\";
 let a0 = a;
 let b0 = b;
@@ -194,19 +241,21 @@ export {
 };
 
 client.registerModule(
-    \\"/named-multiple-var-declarations.mjs\\",
+    \\"http://example.com/named-multiple-var-declarations.mjs\\",
     [\\"a\\",\\"b\\",\\"c\\"],
+    [],
     (updated) => {
         a0 = updated.a;
         b0 = updated.b;
         c0 = updated.c;
-});"
+    }
+);"
 `;
 
 exports[`generateHmrProxy named-single-export 1`] = `
 "import {
     a
-} from '/named-single-export.mjs?mtime=0';
+} from 'http://example.com/named-single-export.mjs?mtime=0';
 import { client } from \\"/@hmr\\";
 let a0 = a;
 
@@ -215,17 +264,19 @@ export {
 };
 
 client.registerModule(
-    \\"/named-single-export.mjs\\",
+    \\"http://example.com/named-single-export.mjs\\",
     [\\"a\\"],
+    [],
     (updated) => {
         a0 = updated.a;
-});"
+    }
+);"
 `;
 
 exports[`generateHmrProxy named-single-var-declaration 1`] = `
 "import {
     a
-} from '/named-single-var-declaration.mjs?mtime=0';
+} from 'http://example.com/named-single-var-declaration.mjs?mtime=0';
 import { client } from \\"/@hmr\\";
 let a0 = a;
 
@@ -234,11 +285,13 @@ export {
 };
 
 client.registerModule(
-    \\"/named-single-var-declaration.mjs\\",
+    \\"http://example.com/named-single-var-declaration.mjs\\",
     [\\"a\\"],
+    [],
     (updated) => {
         a0 = updated.a;
-});"
+    }
+);"
 `;
 
 exports[`generateHmrProxy no-exports 1`] = `

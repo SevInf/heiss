@@ -1,4 +1,5 @@
-import { parse } from 'acorn';
+import { URL } from 'url';
+import { parseModule } from './parseModule';
 import {
     ExportNamedDeclaration,
     FunctionDeclaration,
@@ -9,24 +10,31 @@ import {
 
 class HMRProxyGenerator {
     private source: string;
-    private originalUrl: string;
+    private originalUrl: URL;
 
     // map from export name to alias
     private proxiedExports: Map<string, string> = new Map();
     private usedNames: Set<string> = new Set();
+    private imports: Set<string> = new Set();
 
-    constructor(source: string, originalUrl: string) {
+    constructor(source: string, originalUrl: URL) {
         this.source = source;
         this.originalUrl = originalUrl;
     }
 
     generate(): string {
-        const program = parse(this.source, { sourceType: 'module' });
+        const program = parseModule(this.source);
         for (const statement of program.body) {
-            if (statement.type === 'ExportNamedDeclaration') {
-                this.proxyNamedDeclaration(statement);
-            } else if (statement.type === 'ExportDefaultDeclaration') {
-                this.proxyName('default', '_default');
+            switch (statement.type) {
+                case 'ExportNamedDeclaration':
+                    this.proxyNamedDeclaration(statement);
+                    break;
+                case 'ExportDefaultDeclaration':
+                    this.proxyName('default', '_default');
+                    break;
+                case 'ImportDeclaration':
+                    this.imports.add(this.resolveImport(statement.source.value as string));
+                    break;
             }
         }
 
@@ -34,6 +42,10 @@ class HMRProxyGenerator {
             return this.source;
         }
         return this.generateProxyModule();
+    }
+
+    private resolveImport(relativeImport: string): string {
+        return new URL(relativeImport, this.originalUrl).href;
     }
 
     private proxyNamedDeclaration(exportDeclaration: ExportNamedDeclaration) {
@@ -107,11 +119,13 @@ class HMRProxyGenerator {
             '};',
             '',
             `${clientVarName}.registerModule(`,
-            `    "${this.originalUrl}",`,
+            `    ${JSON.stringify(this.originalUrl)},`,
             `    ${JSON.stringify(exportNames)},`,
+            `    ${JSON.stringify(Array.from(this.imports))},`,
             `    (updated) => {`,
             reassignments.join('\n'),
-            '});'
+            '    }',
+            ');'
         ].join('\n');
     }
 
@@ -132,7 +146,7 @@ class HMRProxyGenerator {
     }
 }
 
-export function generateHmrProxy(source: string, originalUrl: string): string {
+export function generateHmrProxy(source: string, originalUrl: URL): string {
     const generator = new HMRProxyGenerator(source, originalUrl);
     return generator.generate();
 }
