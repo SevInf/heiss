@@ -2,6 +2,7 @@ class HMRClient {
     constructor() {
         this.modules = new Map();
         this.acceptListeners = new Map();
+        this.disposeListeners = new Map();
         // module graph where key is module url and
         // value is a set of all the modules who import it
         this.reverseModuleGraph = new Map();
@@ -44,6 +45,9 @@ class HMRClient {
 
     async reloadModule(url, mtime) {
         const module = this.modules.get(url);
+        if (this.disposeListeners.has(url)) {
+            this.disposeListeners.get(url)();
+        }
         const updatedExports = await import(`${url}?mtime=${mtime}`);
         if (exportsChanged(module.exportNames, Object.keys(updatedExports))) {
             return false;
@@ -95,6 +99,10 @@ class HMRClient {
     accept(moduleUrl, callback) {
         this.acceptListeners.set(moduleUrl, callback);
     }
+
+    dispose(moduleUrl, callback) {
+        this.disposeListeners.set(moduleUrl, callback);
+    }
 }
 
 function reloadPage() {
@@ -112,13 +120,24 @@ const client = new HMRClient();
 client.connect();
 
 function hot(moduleUrl) {
+    const originalModuleUrl = getOriginalUrl(moduleUrl);
     return {
         accept(dependecies, callback) {
             for (const dependecy of dependecies) {
-                client.accept(new URL(dependecy, moduleUrl).href, callback);
+                client.accept(new URL(dependecy, originalModuleUrl).href, callback);
             }
+        },
+
+        dispose(callback) {
+            client.dispose(originalModuleUrl, callback);
         }
     };
+}
+
+function getOriginalUrl(url) {
+    const urlObject = new URL(url);
+    urlObject.searchParams.delete('mtime');
+    return urlObject.href;
 }
 
 export { client, hot };
