@@ -1,13 +1,21 @@
 # Hot module reloading with native modules
 
-To test:
+## Browser support
+
+For demo to work properly, you'll need the browser which natively supports:
+* [ES2015 modules](https://caniuse.com/#feat=es6-module)
+* [Dynamic import](https://caniuse.com/#feat=es6-module-dynamic-import)
+
+`import.meta` support is recommended, but not necessary.
+
+## Testing
 
 ```
 npm install
 npm start
 ```
 
-After that, open http://localhost:8080 in any browser with native ES6 modules support and edit 'example/text.mjs'
+After that, open http://localhost:8080 in any supported browser support and edit 'example/text.mjs'
 
 ## Warning
 
