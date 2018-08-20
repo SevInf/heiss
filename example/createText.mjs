@@ -7,7 +7,7 @@ export function createText() {
     document.body.appendChild(header);
 }
 
-hot(import.meta.url).dispose(() => {
+export function removeText() {
     const header = document.querySelector('h1');
     document.body.removeChild(header);
-});
+}

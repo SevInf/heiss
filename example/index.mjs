@@ -1,8 +1,8 @@
-import { createText } from './createText.mjs';
+import { createText, removeText } from './createText.mjs';
 import { hot } from '/@hmr';
 
 createText();
 
-hot(import.meta.url).accept(['./createText.mjs'], () => {
-    createText();
-});
+hot(import.meta.url)
+    .dispose(() => removeText())
+    .selfAccept();

@@ -126,10 +126,17 @@ function hot(moduleUrl) {
             for (const dependecy of dependecies) {
                 client.accept(new URL(dependecy, originalModuleUrl).href, callback);
             }
+            return this;
         },
 
         dispose(callback) {
             client.dispose(originalModuleUrl, callback);
+            return this;
+        },
+
+        selfAccept() {
+            client.accept(originalModuleUrl, () => {});
+            return this;
         }
     };
 }
