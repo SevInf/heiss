@@ -5,8 +5,7 @@
 For demo to work properly, you'll need the browser which natively supports:
 * [ES2015 modules](https://caniuse.com/#feat=es6-module)
 * [Dynamic import](https://caniuse.com/#feat=es6-module-dynamic-import)
-
-`import.meta` support is recommended, but not necessary.
+* `import.meta`
 
 ## Testing
 
