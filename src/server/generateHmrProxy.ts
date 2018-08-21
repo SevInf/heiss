@@ -1,12 +1,6 @@
 import { URL } from 'url';
 import { parseModule } from './parseModule';
-import {
-    ExportNamedDeclaration,
-    FunctionDeclaration,
-    VariableDeclaration,
-    ClassDeclaration,
-    VariableDeclarator
-} from 'estree';
+import { ExportNamedDeclaration, FunctionDeclaration, VariableDeclaration, ClassDeclaration, Pattern } from 'estree';
 
 class HMRProxyGenerator {
     private source: string;
@@ -60,7 +54,7 @@ class HMRProxyGenerator {
     private proxyDeclaration(declaration: VariableDeclaration | FunctionDeclaration | ClassDeclaration) {
         if (declaration.type === 'VariableDeclaration') {
             for (const variableDeclaration of declaration.declarations) {
-                this.proxyVariableDeclarator(variableDeclaration);
+                this.proxyPattern(variableDeclaration.id);
             }
         } else {
             // class or function
@@ -68,12 +62,25 @@ class HMRProxyGenerator {
         }
     }
 
-    private proxyVariableDeclarator(variable: VariableDeclarator) {
-        switch (variable.id.type) {
+    private proxyPattern(pattern: Pattern) {
+        switch (pattern.type) {
             case 'Identifier':
-                this.proxyName(variable.id.name);
+                this.proxyName(pattern.name);
                 break;
-            // TODO: destructuring
+            case 'ObjectPattern':
+                pattern.properties.forEach(property => this.proxyPattern(property.value));
+                break;
+            case 'ArrayPattern':
+                pattern.elements.forEach(element => this.proxyPattern(element));
+                break;
+            case 'RestElement':
+                this.proxyPattern(pattern.argument);
+                break;
+            case 'AssignmentPattern':
+                this.proxyPattern(pattern.left);
+                break;
+            default:
+                throw new TypeError(`Unknown pattern type ${pattern.type}`);
         }
     }
 

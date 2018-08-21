@@ -67,6 +67,156 @@ client.registerModule(
 );"
 `;
 
+exports[`generateHmrProxy destructuring-array 1`] = `
+"import {
+    a,
+    b
+} from 'http://example.com/destructuring-array.mjs?mtime=0';
+import { client } from \\"/@hmr\\";
+let a0 = a;
+let b0 = b;
+
+export {
+    a0 as a,
+    b0 as b
+};
+
+client.registerModule(
+    \\"http://example.com/destructuring-array.mjs\\",
+    [\\"a\\",\\"b\\"],
+    [],
+    (updated) => {
+        a0 = updated.a;
+        b0 = updated.b;
+    }
+);"
+`;
+
+exports[`generateHmrProxy destructuring-array-rest 1`] = `
+"import {
+    a,
+    rest
+} from 'http://example.com/destructuring-array-rest.mjs?mtime=0';
+import { client } from \\"/@hmr\\";
+let a0 = a;
+let rest0 = rest;
+
+export {
+    a0 as a,
+    rest0 as rest
+};
+
+client.registerModule(
+    \\"http://example.com/destructuring-array-rest.mjs\\",
+    [\\"a\\",\\"rest\\"],
+    [],
+    (updated) => {
+        a0 = updated.a;
+        rest0 = updated.rest;
+    }
+);"
+`;
+
+exports[`generateHmrProxy destructuring-nested 1`] = `
+"import {
+    export1,
+    export2,
+    export3,
+    export4
+} from 'http://example.com/destructuring-nested.mjs?mtime=0';
+import { client } from \\"/@hmr\\";
+let export10 = export1;
+let export20 = export2;
+let export30 = export3;
+let export40 = export4;
+
+export {
+    export10 as export1,
+    export20 as export2,
+    export30 as export3,
+    export40 as export4
+};
+
+client.registerModule(
+    \\"http://example.com/destructuring-nested.mjs\\",
+    [\\"export1\\",\\"export2\\",\\"export3\\",\\"export4\\"],
+    [],
+    (updated) => {
+        export10 = updated.export1;
+        export20 = updated.export2;
+        export30 = updated.export3;
+        export40 = updated.export4;
+    }
+);"
+`;
+
+exports[`generateHmrProxy destructuring-object 1`] = `
+"import {
+    a,
+    b
+} from 'http://example.com/destructuring-object.mjs?mtime=0';
+import { client } from \\"/@hmr\\";
+let a0 = a;
+let b0 = b;
+
+export {
+    a0 as a,
+    b0 as b
+};
+
+client.registerModule(
+    \\"http://example.com/destructuring-object.mjs\\",
+    [\\"a\\",\\"b\\"],
+    [],
+    (updated) => {
+        a0 = updated.a;
+        b0 = updated.b;
+    }
+);"
+`;
+
+exports[`generateHmrProxy destructuring-object-aliases 1`] = `
+"import {
+    exportName
+} from 'http://example.com/destructuring-object-aliases.mjs?mtime=0';
+import { client } from \\"/@hmr\\";
+let exportName0 = exportName;
+
+export {
+    exportName0 as exportName
+};
+
+client.registerModule(
+    \\"http://example.com/destructuring-object-aliases.mjs\\",
+    [\\"exportName\\"],
+    [],
+    (updated) => {
+        exportName0 = updated.exportName;
+    }
+);"
+`;
+
+exports[`generateHmrProxy destructuring-object-default 1`] = `
+"import {
+    a
+} from 'http://example.com/destructuring-object-default.mjs?mtime=0';
+import { client } from \\"/@hmr\\";
+let a0 = a;
+
+export {
+    a0 as a
+};
+
+client.registerModule(
+    \\"http://example.com/destructuring-object-default.mjs\\",
+    [\\"a\\"],
+    [],
+    (updated) => {
+        a0 = updated.a;
+    }
+);"
+`;
+
 exports[`generateHmrProxy dynamic-imports 1`] = `
 "import \\"http://example.com/dynamic-imports.mjs?mtime=0\\";
 import { client } from \\"/@hmr\\";
