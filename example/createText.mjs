@@ -1,5 +1,4 @@
 import { text } from './text.mjs';
-import { hot } from '/@hmr';
 
 export function createText() {
     const header = document.createElement('h1');

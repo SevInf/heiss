@@ -1,1 +1,1 @@
-export const text = 'Hello, world!';
+export let text = 'Hello, world!';

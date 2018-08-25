@@ -10,6 +10,7 @@ class HMRProxyGenerator {
     private proxiedExports: Map<string, string> = new Map();
     private usedNames: Set<string> = new Set();
     private imports: Set<string> = new Set();
+    private isReloadable = true;
 
     constructor(source: string, originalUrl: URL) {
         this.source = source;
@@ -30,6 +31,10 @@ class HMRProxyGenerator {
                     this.imports.add(this.resolveImport(statement.source.value as string));
                     break;
             }
+        }
+
+        if (!this.isReloadable) {
+            return this.generateNonReloadableProxy();
         }
 
         if (this.proxiedExports.size === 0) {
@@ -53,6 +58,10 @@ class HMRProxyGenerator {
 
     private proxyDeclaration(declaration: VariableDeclaration | FunctionDeclaration | ClassDeclaration) {
         if (declaration.type === 'VariableDeclaration') {
+            if (declaration.kind !== 'const') {
+                this.isReloadable = false;
+                return;
+            }
             for (const variableDeclaration of declaration.declarations) {
                 this.proxyPattern(variableDeclaration.id);
             }
@@ -90,6 +99,17 @@ class HMRProxyGenerator {
         }
         this.usedNames.add(alias);
         this.proxiedExports.set(name, alias);
+    }
+
+    private generateNonReloadableProxy(): string {
+        return [
+            `export * from "${this.originalUrl}?mtime=0";`,
+            `import { client } from "/@hmr";`,
+            '',
+            'client.registerNonReloadableModule(',
+            `    "${this.originalUrl}"`,
+            ');'
+        ].join('\n');
     }
 
     private generateNoExportsProxy(): string {

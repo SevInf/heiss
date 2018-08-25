@@ -300,6 +300,24 @@ client.registerModule(
 );"
 `;
 
+exports[`generateHmrProxy mutable-binding-let 1`] = `
+"export * from \\"http://example.com/mutable-binding-let.mjs?mtime=0\\";
+import { client } from \\"/@hmr\\";
+
+client.registerNonReloadableModule(
+    \\"http://example.com/mutable-binding-let.mjs\\"
+);"
+`;
+
+exports[`generateHmrProxy mutable-binding-var 1`] = `
+"export * from \\"http://example.com/mutable-binding-var.mjs?mtime=0\\";
+import { client } from \\"/@hmr\\";
+
+client.registerNonReloadableModule(
+    \\"http://example.com/mutable-binding-var.mjs\\"
+);"
+`;
+
 exports[`generateHmrProxy named-class-export.js 1`] = `
 "import {
     C

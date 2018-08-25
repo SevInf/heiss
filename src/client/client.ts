@@ -6,6 +6,7 @@ type ModuleUpdater = (newExports: any) => void;
 
 interface Module {
     exportNames: Array<string>;
+    isReloadable: boolean;
     update?: (newExports: any) => void;
 }
 
@@ -34,6 +35,10 @@ class HMRClient {
         const module = this.modules.get(url);
         if (!module) {
             // if module was not loaded, we don't need to reload anything
+            return;
+        }
+        if (!module.isReloadable) {
+            reloadPage();
             return;
         }
 
@@ -100,7 +105,15 @@ class HMRClient {
         }
         this.modules.set(url, {
             exportNames,
+            isReloadable: true,
             update
+        });
+    }
+
+    registerNonReloadableModule(url: string) {
+        this.modules.set(url, {
+            exportNames: [],
+            isReloadable: false
         });
     }
 
