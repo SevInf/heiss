@@ -7,6 +7,7 @@ type ModuleUpdater = (newExports: any) => void;
 interface Module {
     exportNames: string[];
     isReloadable: boolean;
+    mtime: number;
     update?: (newExports: any) => void;
 }
 
@@ -37,6 +38,7 @@ class HMRClient {
             // if module was not loaded, we don't need to reload anything
             return;
         }
+
         if (!module.isReloadable) {
             reloadPage();
             return;
@@ -63,6 +65,10 @@ class HMRClient {
         if (!module) {
             return false;
         }
+        if (module.mtime >= mtime) {
+            // already at the latest or newer version, nothing to do
+            return true;
+        }
         const dispose = this.disposeListeners.get(url);
         if (dispose) {
             dispose();
@@ -75,6 +81,7 @@ class HMRClient {
         if (typeof module.update === 'function') {
             module.update(updatedExports);
         }
+        module.mtime = mtime;
         return true;
     }
 
@@ -106,6 +113,7 @@ class HMRClient {
         this.modules.set(url, {
             exportNames,
             isReloadable: true,
+            mtime: 0,
             update
         });
     }
@@ -113,6 +121,7 @@ class HMRClient {
     registerNonReloadableModule(url: string) {
         this.modules.set(url, {
             exportNames: [],
+            mtime: 0,
             isReloadable: false
         });
     }
