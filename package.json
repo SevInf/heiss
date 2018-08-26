@@ -20,9 +20,9 @@
     "build": "tsc --build",
     "start": "npm run build && bin/heiss example",
     "lint:tslint": "tslint src/**/*.ts test/**/*.ts",
-    "lint:prettier": "prettier -l src/**/*.ts test/**/*.ts",
+    "lint:prettier": "prettier -l src/**/*.ts test/**/*.ts *.md",
     "lint": "npm-run-all lint:*",
-    "format": "prettier --write src/**/*.ts test/**/*.ts",
+    "format": "prettier --write src/**/*.ts test/**/*.ts *.md",
     "precommit": "npm run lint",
     "prepublishOnly": "npm-run-all build test",
     "test": "jest"
