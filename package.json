@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "",
   "main": "index.js",
-  "keywords": [],
+  "keywords": ["modules", "es6", "es2015", "hmr", "hot", "reload", "livereload"],
   "author": "Sergey Tatarintsev <sergey@tatarintsev.me> (https://github.com/SevInf)",
   "license": "MIT",
   "bin": {
