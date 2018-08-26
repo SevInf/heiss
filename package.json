@@ -9,13 +9,19 @@
   "bin": {
     "heiss": "./bin/heiss"
   },
+  "files": [
+    "bin",
+    "lib"
+  ],
   "scripts": {
-    "start": "tsc --build && bin/heiss example",
+    "build": "tsc --build",
+    "start": "npm run build && bin/heiss example",
     "lint:tslint": "tslint src/**/*.ts test/**/*.ts",
     "lint:prettier": "prettier -l src/**/*.ts test/**/*.ts",
     "lint": "npm-run-all lint:*",
     "format": "prettier --write src/**/*.ts test/**/*.ts",
     "precommit": "npm run lint",
+    "prepublishOnly": "npm-run-all build test",
     "test": "jest"
   },
   "dependencies": {
