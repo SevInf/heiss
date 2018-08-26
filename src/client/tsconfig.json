@@ -4,6 +4,7 @@
         "module": "ESNext",
         "lib": ["es2018", "dom"],
         "outDir": "../../lib/client",
+        "inlineSources": true
     },
     "include": [
         "*.ts"

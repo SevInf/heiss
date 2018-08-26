@@ -1,5 +1,5 @@
-import { generateHmrProxy } from '../src/server/generateHmrProxy';
-import { parseModule } from '../src/server/parseModule';
+import { generateHmrProxy } from '../../src/server/generateHmrProxy';
+import { parseModule } from '../../src/server/parseModule';
 import { readdirSync, readFileSync } from 'fs';
 import * as path from 'path';
 

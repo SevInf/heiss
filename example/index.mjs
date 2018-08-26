@@ -1,5 +1,5 @@
 import { createText, removeText } from './createText.mjs';
-import { hot } from '/@hmr';
+import { hot } from '/@hmr/api';
 
 createText();
 

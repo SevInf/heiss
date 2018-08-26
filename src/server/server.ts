@@ -1,15 +1,19 @@
 'use strict';
 /* tslint:disable:no-console */
+import * as path from 'path';
 import { URL } from 'url';
 import sane = require('sane');
 import Koa from 'koa';
 import route from 'koa-route';
 import koaStatic from 'koa-static';
 import koaWebsocket = require('koa-websocket');
+import koaMount from 'koa-mount';
 import * as WebSocket from 'ws';
 import { generateProxyMiddleware } from './generateProxyMiddleware';
-import { getClientCode } from './clientTemplate';
+import { hmrEntryMiddleware } from './hmrEntryMiddleware';
 import { Message, MessageType } from './message';
+
+const clientBase = path.resolve(__dirname, '..', 'client');
 
 export interface ServerOptions {
     port: number;
@@ -31,25 +35,9 @@ export class Server {
     }
 
     async start() {
-        const clientCode = await getClientCode(`ws://${this.options.host}:${this.options.port}/@hmr/socket`);
-        this.app.use(
-            route.get('/@hmr', context => {
-                context.response.type = 'application/javascript';
-                context.response.body = clientCode;
-            })
-        );
-        this.app.ws.use(
-            route.all('/@hmr/socket', context => {
-                const websocket = (context as koaWebsocket.MiddlewareContext).websocket;
-                this.sockets.add(websocket);
-                websocket.on('close', () => {
-                    console.log('socket disconnected');
-                    this.sockets.delete(websocket);
-                });
-            })
-        );
-        this.app.use(generateProxyMiddleware({ rootPath: this.options.directory }));
-        this.app.use(koaStatic(this.options.directory));
+        this.setupHmrMiddleware();
+        this.setupAppMiddleware();
+
         await this.app.listen(this.options.port, this.options.host);
         console.log(`Server started on ${this.rootURL}`);
         const watcher = sane(this.options.directory);
@@ -63,8 +51,40 @@ export class Server {
         });
     }
 
+    private setupHmrMiddleware() {
+        this.app.use(
+            route.get(
+                '/@hmr/api',
+                hmrEntryMiddleware({
+                    websocketURL: `${getURLString('ws', this.options)}/@hmr/socket`,
+                    filePath: path.join(clientBase, 'api.js')
+                })
+            )
+        );
+        this.app.ws.use(
+            route.all('/@hmr/socket', context => {
+                const websocket = (context as koaWebsocket.MiddlewareContext).websocket;
+                this.addConnection(websocket);
+            })
+        );
+        this.app.use(koaMount('/@hmr', koaStatic(clientBase, { extensions: ['.js'] })));
+    }
+
+    private setupAppMiddleware() {
+        this.app.use(generateProxyMiddleware({ rootPath: this.options.directory }));
+        this.app.use(koaStatic(this.options.directory));
+    }
+
     private fileUrl(filepath: string): string {
         return new URL(filepath, this.rootURL).href;
+    }
+
+    private addConnection(websocket: WebSocket) {
+        this.sockets.add(websocket);
+        websocket.on('close', () => {
+            console.log('socket disconnected');
+            this.sockets.delete(websocket);
+        });
     }
 
     broadcast(message: Message) {

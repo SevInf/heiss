@@ -132,18 +132,20 @@ class HMRProxyGenerator {
     private generateNonReloadableProxy(): string {
         return [
             `export * from "${this.originalUrl}?mtime=0";`,
-            `import { client } from "/@hmr";`,
+            `import { client } from "/@hmr/api";`,
             '',
-            'client.registerNonReloadableModule(',
-            `    "${this.originalUrl}"`,
-            ');'
+            'client.registerModule(',
+            `    "${this.originalUrl}",`,
+            '    [],',
+            '    []',
+            ').markAsNonReloadable();'
         ].join('\n');
     }
 
     private generateNoExportsProxy(): string {
         return [
             `import "${this.originalUrl}?mtime=0";`,
-            `import { client } from "/@hmr";`,
+            `import { client } from "/@hmr/api";`,
             '',
             'client.registerModule(',
             `    "${this.originalUrl}",`,
@@ -179,7 +181,7 @@ class HMRProxyGenerator {
             'import {',
             imports.join(',\n'),
             `} from '${this.originalUrl}?mtime=0';`,
-            `import { ${clientVarName} } from "/@hmr";`,
+            `import { ${clientVarName} } from "/@hmr/api";`,
             assignments.join('\n'),
             '',
             'export {',
