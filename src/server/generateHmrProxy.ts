@@ -2,6 +2,7 @@ import { URL } from 'url';
 import { parseModule } from './parseModule';
 import { ExportNamedDeclaration, FunctionDeclaration, VariableDeclaration, ClassDeclaration, Pattern } from 'estree';
 
+type NameCallback = (name: string) => void;
 class HMRProxyGenerator {
     private source: string;
     private originalUrl: URL;
@@ -10,7 +11,8 @@ class HMRProxyGenerator {
     private proxiedExports: Map<string, string> = new Map();
     private usedNames: Set<string> = new Set();
     private imports: Set<string> = new Set();
-    private isReloadable = true;
+    private mutableVarNames: Set<string> = new Set();
+    private exportsMutableBindings = false;
 
     constructor(source: string, originalUrl: URL) {
         this.source = source;
@@ -21,6 +23,9 @@ class HMRProxyGenerator {
         const program = parseModule(this.source);
         for (const statement of program.body) {
             switch (statement.type) {
+                case 'VariableDeclaration':
+                    this.registerMutableNames(statement);
+                    break;
                 case 'ExportNamedDeclaration':
                     this.proxyNamedDeclaration(statement);
                     break;
@@ -33,7 +38,7 @@ class HMRProxyGenerator {
             }
         }
 
-        if (!this.isReloadable) {
+        if (!this.isReloadable()) {
             return this.generateNonReloadableProxy();
         }
 
@@ -41,6 +46,25 @@ class HMRProxyGenerator {
             return this.generateNoExportsProxy();
         }
         return this.generateExportsProxy();
+    }
+
+    private registerMutableNames(declaration: VariableDeclaration) {
+        if (declaration.kind === 'const') {
+            return;
+        }
+        this.forEachDeclaredVariable(declaration, name => this.mutableVarNames.add(name));
+    }
+
+    private isReloadable(): boolean {
+        if (this.exportsMutableBindings) {
+            return false;
+        }
+        for (const name of this.proxiedExports.keys()) {
+            if (this.mutableVarNames.has(name)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private resolveImport(relativeImport: string): string {
@@ -59,34 +83,38 @@ class HMRProxyGenerator {
     private proxyDeclaration(declaration: VariableDeclaration | FunctionDeclaration | ClassDeclaration) {
         if (declaration.type === 'VariableDeclaration') {
             if (declaration.kind !== 'const') {
-                this.isReloadable = false;
+                this.exportsMutableBindings = true;
                 return;
             }
-            for (const variableDeclaration of declaration.declarations) {
-                this.proxyPattern(variableDeclaration.id);
-            }
+            this.forEachDeclaredVariable(declaration, name => this.proxyName(name));
         } else {
             // class or function
             this.proxyName(declaration.id!.name);
         }
     }
 
-    private proxyPattern(pattern: Pattern) {
+    private forEachDeclaredVariable(declaration: VariableDeclaration, callback: NameCallback) {
+        for (const variableDeclaration of declaration.declarations) {
+            this.forEachDeclaredName(variableDeclaration.id, callback);
+        }
+    }
+
+    private forEachDeclaredName(pattern: Pattern, callback: NameCallback) {
         switch (pattern.type) {
             case 'Identifier':
-                this.proxyName(pattern.name);
+                callback(pattern.name);
                 break;
             case 'ObjectPattern':
-                pattern.properties.forEach(property => this.proxyPattern(property.value));
+                pattern.properties.forEach(property => this.forEachDeclaredName(property.value, callback));
                 break;
             case 'ArrayPattern':
-                pattern.elements.forEach(element => this.proxyPattern(element));
+                pattern.elements.forEach(element => this.forEachDeclaredName(element, callback));
                 break;
             case 'RestElement':
-                this.proxyPattern(pattern.argument);
+                this.forEachDeclaredName(pattern.argument, callback);
                 break;
             case 'AssignmentPattern':
-                this.proxyPattern(pattern.left);
+                this.forEachDeclaredName(pattern.left, callback);
                 break;
             default:
                 throw new TypeError(`Unknown pattern type ${pattern.type}`);
