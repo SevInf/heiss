@@ -159,7 +159,7 @@ class HMRProxyGenerator {
         const assignments = [];
         const reexports = [];
         const reassignments = [];
-        let clientVarName = this.getUniqueName('client');
+        const clientVarName = this.getUniqueName('client');
 
         for (const [proxiedName, importAlias] of this.proxiedExports) {
             exportNames.push(proxiedName);

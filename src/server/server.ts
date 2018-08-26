@@ -1,7 +1,5 @@
 'use strict';
-
-import * as fs from 'fs-extra';
-import * as path from 'path';
+/* tslint:disable:no-console */
 import { URL } from 'url';
 import sane = require('sane');
 import Koa from 'koa';

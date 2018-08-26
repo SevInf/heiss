@@ -5,7 +5,7 @@ type DisposeListener = () => void;
 type ModuleUpdater = (newExports: any) => void;
 
 interface Module {
-    exportNames: Array<string>;
+    exportNames: string[];
     isReloadable: boolean;
     update?: (newExports: any) => void;
 }
@@ -99,7 +99,7 @@ class HMRClient {
         return null;
     }
 
-    registerModule(url: string, exportNames: Array<string>, imports: Array<string>, update?: ModuleUpdater) {
+    registerModule(url: string, exportNames: string[], imports: string[], update?: ModuleUpdater) {
         for (const importName of imports) {
             this.registerModuleParent(importName, url);
         }
@@ -165,6 +165,7 @@ function hot(moduleUrl: string) {
         },
 
         selfAccept() {
+            // tslint:disable-next-line:no-empty
             client.accept(originalModuleUrl, () => {});
             return this;
         }
