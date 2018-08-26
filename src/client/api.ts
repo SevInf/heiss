@@ -49,4 +49,4 @@ function getOriginalUrl(url: string): string {
     return urlObject.href;
 }
 
-export { registry as client, hot };
+export { registry, hot };

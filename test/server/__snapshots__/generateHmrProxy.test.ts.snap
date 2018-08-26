@@ -1,38 +1,17 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`generateHmrProxy client-named-export 1`] = `
-"import {
-    client
-} from 'http://example.com/client-named-export.mjs?mtime=0';
-import { client0 } from \\"/@hmr/api\\";
-let client1 = client;
-
-export {
-    client1 as client
-};
-
-client0.registerModule(
-    \\"http://example.com/client-named-export.mjs\\",
-    [\\"client\\"],
-    [],
-    (updated) => {
-        client1 = updated.client;
-    }
-);"
-`;
-
 exports[`generateHmrProxy default-export 1`] = `
 "import {
     default as _default
 } from 'http://example.com/default-export.mjs?mtime=0';
-import { client } from \\"/@hmr/api\\";
+import { registry } from \\"/@hmr/api\\";
 let _default0 = _default;
 
 export {
     _default0 as default
 };
 
-client.registerModule(
+registry.registerModule(
     \\"http://example.com/default-export.mjs\\",
     [\\"default\\"],
     [],
@@ -47,7 +26,7 @@ exports[`generateHmrProxy default-export-conflict 1`] = `
     default as _default,
     _default as _default0
 } from 'http://example.com/default-export-conflict.mjs?mtime=0';
-import { client } from \\"/@hmr/api\\";
+import { registry } from \\"/@hmr/api\\";
 let _default1 = _default;
 let _default00 = _default0;
 
@@ -56,7 +35,7 @@ export {
     _default00 as _default
 };
 
-client.registerModule(
+registry.registerModule(
     \\"http://example.com/default-export-conflict.mjs\\",
     [\\"default\\",\\"_default\\"],
     [],
@@ -72,7 +51,7 @@ exports[`generateHmrProxy destructuring-array 1`] = `
     a,
     b
 } from 'http://example.com/destructuring-array.mjs?mtime=0';
-import { client } from \\"/@hmr/api\\";
+import { registry } from \\"/@hmr/api\\";
 let a0 = a;
 let b0 = b;
 
@@ -81,7 +60,7 @@ export {
     b0 as b
 };
 
-client.registerModule(
+registry.registerModule(
     \\"http://example.com/destructuring-array.mjs\\",
     [\\"a\\",\\"b\\"],
     [],
@@ -97,7 +76,7 @@ exports[`generateHmrProxy destructuring-array-rest 1`] = `
     a,
     rest
 } from 'http://example.com/destructuring-array-rest.mjs?mtime=0';
-import { client } from \\"/@hmr/api\\";
+import { registry } from \\"/@hmr/api\\";
 let a0 = a;
 let rest0 = rest;
 
@@ -106,7 +85,7 @@ export {
     rest0 as rest
 };
 
-client.registerModule(
+registry.registerModule(
     \\"http://example.com/destructuring-array-rest.mjs\\",
     [\\"a\\",\\"rest\\"],
     [],
@@ -124,7 +103,7 @@ exports[`generateHmrProxy destructuring-nested 1`] = `
     export3,
     export4
 } from 'http://example.com/destructuring-nested.mjs?mtime=0';
-import { client } from \\"/@hmr/api\\";
+import { registry } from \\"/@hmr/api\\";
 let export10 = export1;
 let export20 = export2;
 let export30 = export3;
@@ -137,7 +116,7 @@ export {
     export40 as export4
 };
 
-client.registerModule(
+registry.registerModule(
     \\"http://example.com/destructuring-nested.mjs\\",
     [\\"export1\\",\\"export2\\",\\"export3\\",\\"export4\\"],
     [],
@@ -155,7 +134,7 @@ exports[`generateHmrProxy destructuring-object 1`] = `
     a,
     b
 } from 'http://example.com/destructuring-object.mjs?mtime=0';
-import { client } from \\"/@hmr/api\\";
+import { registry } from \\"/@hmr/api\\";
 let a0 = a;
 let b0 = b;
 
@@ -164,7 +143,7 @@ export {
     b0 as b
 };
 
-client.registerModule(
+registry.registerModule(
     \\"http://example.com/destructuring-object.mjs\\",
     [\\"a\\",\\"b\\"],
     [],
@@ -179,14 +158,14 @@ exports[`generateHmrProxy destructuring-object-aliases 1`] = `
 "import {
     exportName
 } from 'http://example.com/destructuring-object-aliases.mjs?mtime=0';
-import { client } from \\"/@hmr/api\\";
+import { registry } from \\"/@hmr/api\\";
 let exportName0 = exportName;
 
 export {
     exportName0 as exportName
 };
 
-client.registerModule(
+registry.registerModule(
     \\"http://example.com/destructuring-object-aliases.mjs\\",
     [\\"exportName\\"],
     [],
@@ -200,14 +179,14 @@ exports[`generateHmrProxy destructuring-object-default 1`] = `
 "import {
     a
 } from 'http://example.com/destructuring-object-default.mjs?mtime=0';
-import { client } from \\"/@hmr/api\\";
+import { registry } from \\"/@hmr/api\\";
 let a0 = a;
 
 export {
     a0 as a
 };
 
-client.registerModule(
+registry.registerModule(
     \\"http://example.com/destructuring-object-default.mjs\\",
     [\\"a\\"],
     [],
@@ -219,9 +198,9 @@ client.registerModule(
 
 exports[`generateHmrProxy dynamic-imports 1`] = `
 "import \\"http://example.com/dynamic-imports.mjs?mtime=0\\";
-import { client } from \\"/@hmr/api\\";
+import { registry } from \\"/@hmr/api\\";
 
-client.registerModule(
+registry.registerModule(
     \\"http://example.com/dynamic-imports.mjs\\",
     [],
     []
@@ -230,9 +209,9 @@ client.registerModule(
 
 exports[`generateHmrProxy import-meta 1`] = `
 "import \\"http://example.com/import-meta.mjs?mtime=0\\";
-import { client } from \\"/@hmr/api\\";
+import { registry } from \\"/@hmr/api\\";
 
-client.registerModule(
+registry.registerModule(
     \\"http://example.com/import-meta.mjs\\",
     [],
     []
@@ -243,14 +222,14 @@ exports[`generateHmrProxy imports 1`] = `
 "import {
     a
 } from 'http://example.com/imports.mjs?mtime=0';
-import { client } from \\"/@hmr/api\\";
+import { registry } from \\"/@hmr/api\\";
 let a0 = a;
 
 export {
     a0 as a
 };
 
-client.registerModule(
+registry.registerModule(
     \\"http://example.com/imports.mjs\\",
     [\\"a\\"],
     [\\"http://example.com/a\\",\\"http://example.com/c\\",\\"http://example.com/d\\"],
@@ -262,9 +241,9 @@ client.registerModule(
 
 exports[`generateHmrProxy imports-only 1`] = `
 "import \\"http://example.com/imports-only.mjs?mtime=0\\";
-import { client } from \\"/@hmr/api\\";
+import { registry } from \\"/@hmr/api\\";
 
-client.registerModule(
+registry.registerModule(
     \\"http://example.com/imports-only.mjs\\",
     [],
     [\\"http://example.com/a\\",\\"http://example.com/b\\",\\"http://example.com/c\\"]
@@ -277,7 +256,7 @@ exports[`generateHmrProxy multiple-named-exports 1`] = `
     b,
     c
 } from 'http://example.com/multiple-named-exports.mjs?mtime=0';
-import { client } from \\"/@hmr/api\\";
+import { registry } from \\"/@hmr/api\\";
 let a0 = a;
 let b0 = b;
 let c0 = c;
@@ -288,7 +267,7 @@ export {
     c0 as c
 };
 
-client.registerModule(
+registry.registerModule(
     \\"http://example.com/multiple-named-exports.mjs\\",
     [\\"a\\",\\"b\\",\\"c\\"],
     [],
@@ -302,9 +281,9 @@ client.registerModule(
 
 exports[`generateHmrProxy mutable-binding-let 1`] = `
 "export * from \\"http://example.com/mutable-binding-let.mjs?mtime=0\\";
-import { client } from \\"/@hmr/api\\";
+import { registry } from \\"/@hmr/api\\";
 
-client.registerModule(
+registry.registerModule(
     \\"http://example.com/mutable-binding-let.mjs\\",
     [],
     []
@@ -313,9 +292,9 @@ client.registerModule(
 
 exports[`generateHmrProxy mutable-binding-var 1`] = `
 "export * from \\"http://example.com/mutable-binding-var.mjs?mtime=0\\";
-import { client } from \\"/@hmr/api\\";
+import { registry } from \\"/@hmr/api\\";
 
-client.registerModule(
+registry.registerModule(
     \\"http://example.com/mutable-binding-var.mjs\\",
     [],
     []
@@ -324,9 +303,9 @@ client.registerModule(
 
 exports[`generateHmrProxy mutable-destructuring 1`] = `
 "export * from \\"http://example.com/mutable-destructuring.mjs?mtime=0\\";
-import { client } from \\"/@hmr/api\\";
+import { registry } from \\"/@hmr/api\\";
 
-client.registerModule(
+registry.registerModule(
     \\"http://example.com/mutable-destructuring.mjs\\",
     [],
     []
@@ -335,9 +314,9 @@ client.registerModule(
 
 exports[`generateHmrProxy mutable-named-export 1`] = `
 "export * from \\"http://example.com/mutable-named-export.mjs?mtime=0\\";
-import { client } from \\"/@hmr/api\\";
+import { registry } from \\"/@hmr/api\\";
 
-client.registerModule(
+registry.registerModule(
     \\"http://example.com/mutable-named-export.mjs\\",
     [],
     []
@@ -348,14 +327,14 @@ exports[`generateHmrProxy named-class-export.js 1`] = `
 "import {
     C
 } from 'http://example.com/named-class-export.js?mtime=0';
-import { client } from \\"/@hmr/api\\";
+import { registry } from \\"/@hmr/api\\";
 let C0 = C;
 
 export {
     C0 as C
 };
 
-client.registerModule(
+registry.registerModule(
     \\"http://example.com/named-class-export.js\\",
     [\\"C\\"],
     [],
@@ -372,7 +351,7 @@ exports[`generateHmrProxy named-conflicts 1`] = `
     a1,
     a2
 } from 'http://example.com/named-conflicts.mjs?mtime=0';
-import { client } from \\"/@hmr/api\\";
+import { registry } from \\"/@hmr/api\\";
 let a3 = a;
 let a00 = a0;
 let a10 = a1;
@@ -385,7 +364,7 @@ export {
     a20 as a2
 };
 
-client.registerModule(
+registry.registerModule(
     \\"http://example.com/named-conflicts.mjs\\",
     [\\"a\\",\\"a0\\",\\"a1\\",\\"a2\\"],
     [],
@@ -402,14 +381,14 @@ exports[`generateHmrProxy named-export-alias 1`] = `
 "import {
     b
 } from 'http://example.com/named-export-alias.mjs?mtime=0';
-import { client } from \\"/@hmr/api\\";
+import { registry } from \\"/@hmr/api\\";
 let b0 = b;
 
 export {
     b0 as b
 };
 
-client.registerModule(
+registry.registerModule(
     \\"http://example.com/named-export-alias.mjs\\",
     [\\"b\\"],
     [],
@@ -423,14 +402,14 @@ exports[`generateHmrProxy named-function-declaration 1`] = `
 "import {
     f
 } from 'http://example.com/named-function-declaration.mjs?mtime=0';
-import { client } from \\"/@hmr/api\\";
+import { registry } from \\"/@hmr/api\\";
 let f0 = f;
 
 export {
     f0 as f
 };
 
-client.registerModule(
+registry.registerModule(
     \\"http://example.com/named-function-declaration.mjs\\",
     [\\"f\\"],
     [],
@@ -446,7 +425,7 @@ exports[`generateHmrProxy named-multiple-var-declarations 1`] = `
     b,
     c
 } from 'http://example.com/named-multiple-var-declarations.mjs?mtime=0';
-import { client } from \\"/@hmr/api\\";
+import { registry } from \\"/@hmr/api\\";
 let a0 = a;
 let b0 = b;
 let c0 = c;
@@ -457,7 +436,7 @@ export {
     c0 as c
 };
 
-client.registerModule(
+registry.registerModule(
     \\"http://example.com/named-multiple-var-declarations.mjs\\",
     [\\"a\\",\\"b\\",\\"c\\"],
     [],
@@ -473,14 +452,14 @@ exports[`generateHmrProxy named-single-export 1`] = `
 "import {
     a
 } from 'http://example.com/named-single-export.mjs?mtime=0';
-import { client } from \\"/@hmr/api\\";
+import { registry } from \\"/@hmr/api\\";
 let a0 = a;
 
 export {
     a0 as a
 };
 
-client.registerModule(
+registry.registerModule(
     \\"http://example.com/named-single-export.mjs\\",
     [\\"a\\"],
     [],
@@ -494,14 +473,14 @@ exports[`generateHmrProxy named-single-var-declaration 1`] = `
 "import {
     a
 } from 'http://example.com/named-single-var-declaration.mjs?mtime=0';
-import { client } from \\"/@hmr/api\\";
+import { registry } from \\"/@hmr/api\\";
 let a0 = a;
 
 export {
     a0 as a
 };
 
-client.registerModule(
+registry.registerModule(
     \\"http://example.com/named-single-var-declaration.mjs\\",
     [\\"a\\"],
     [],
@@ -513,11 +492,32 @@ client.registerModule(
 
 exports[`generateHmrProxy no-exports 1`] = `
 "import \\"http://example.com/no-exports.mjs?mtime=0\\";
-import { client } from \\"/@hmr/api\\";
+import { registry } from \\"/@hmr/api\\";
 
-client.registerModule(
+registry.registerModule(
     \\"http://example.com/no-exports.mjs\\",
     [],
     []
+);"
+`;
+
+exports[`generateHmrProxy registry-named-export 1`] = `
+"import {
+    registry
+} from 'http://example.com/registry-named-export.mjs?mtime=0';
+import { registry as registry0 } from \\"/@hmr/api\\"
+let registry1 = registry;
+
+export {
+    registry1 as registry
+};
+
+registry0.registerModule(
+    \\"http://example.com/registry-named-export.mjs\\",
+    [\\"registry\\"],
+    [],
+    (updated) => {
+        registry1 = updated.registry;
+    }
 );"
 `;

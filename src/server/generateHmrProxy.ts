@@ -132,9 +132,9 @@ class HMRProxyGenerator {
     private generateNonReloadableProxy(): string {
         return [
             `export * from "${this.originalUrl}?mtime=0";`,
-            `import { client } from "/@hmr/api";`,
+            `import { registry } from "/@hmr/api";`,
             '',
-            'client.registerModule(',
+            'registry.registerModule(',
             `    "${this.originalUrl}",`,
             '    [],',
             '    []',
@@ -145,9 +145,9 @@ class HMRProxyGenerator {
     private generateNoExportsProxy(): string {
         return [
             `import "${this.originalUrl}?mtime=0";`,
-            `import { client } from "/@hmr/api";`,
+            `import { registry } from "/@hmr/api";`,
             '',
-            'client.registerModule(',
+            'registry.registerModule(',
             `    "${this.originalUrl}",`,
             '    [],',
             `    ${JSON.stringify(Array.from(this.imports))}`,
@@ -161,8 +161,11 @@ class HMRProxyGenerator {
         const assignments = [];
         const reexports = [];
         const reassignments = [];
-        const clientVarName = this.getUniqueName('client');
-
+        const registryVarName = this.getUniqueName('registry');
+        const registryImport =
+            registryVarName === 'registry'
+                ? `import { registry } from "/@hmr/api";`
+                : `import { registry as ${registryVarName} } from "/@hmr/api"`;
         for (const [proxiedName, importAlias] of this.proxiedExports) {
             exportNames.push(proxiedName);
             if (proxiedName === importAlias) {
@@ -181,14 +184,14 @@ class HMRProxyGenerator {
             'import {',
             imports.join(',\n'),
             `} from '${this.originalUrl}?mtime=0';`,
-            `import { ${clientVarName} } from "/@hmr/api";`,
+            registryImport,
             assignments.join('\n'),
             '',
             'export {',
             reexports.join(',\n'),
             '};',
             '',
-            `${clientVarName}.registerModule(`,
+            `${registryVarName}.registerModule(`,
             `    ${JSON.stringify(this.originalUrl)},`,
             `    ${JSON.stringify(exportNames)},`,
             `    ${JSON.stringify(Array.from(this.imports))},`,
