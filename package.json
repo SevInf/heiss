@@ -1,7 +1,7 @@
 {
   "name": "heiss",
   "version": "0.1.1",
-  "description": "",
+  "description": "Static server, which implements hot module replacement for native ES2015 modules.",
   "main": "index.js",
   "keywords": [
     "modules",
@@ -12,6 +12,14 @@
     "reload",
     "livereload"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SevInf/hmr-native.git"
+  },
+  "bugs": {
+    "url": "https://github.com/SevInf/hmr-native/issues"
+  },
+  "homepage": "https://github.com/SevInf/hmr-native#readme",
   "author": "Sergey Tatarintsev <sergey@tatarintsev.me> (https://github.com/SevInf)",
   "license": "MIT",
   "bin": {
