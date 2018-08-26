@@ -53,8 +53,10 @@ export class Server {
         this.app.use(generateProxyMiddleware({ rootPath: this.options.directory }));
         this.app.use(koaStatic(this.options.directory));
         await this.app.listen(this.options.port, this.options.host);
+        console.log(`Server started on ${this.rootURL}`);
         const watcher = sane(this.options.directory);
         watcher.on('change', (filepath, root, stat) => {
+            console.log(`File changed ${filepath}`);
             this.broadcast({
                 type: MessageType.CHANGE,
                 url: this.fileUrl(filepath),
