@@ -20,7 +20,7 @@ class HMRClient {
     private reverseModuleGraph: Map<string, Set<string>> = new Map();
 
     connect() {
-        const websocket = new WebSocket('ws://localhost:8080/@hmr/socket');
+        const websocket = new WebSocket(__WEBSOCKET_URL__);
         websocket.addEventListener('message', event => {
             const parsed = JSON.parse(event.data);
             switch (parsed.type) {

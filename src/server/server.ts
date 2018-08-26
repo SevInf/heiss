@@ -2,6 +2,7 @@
 
 import * as fs from 'fs-extra';
 import * as path from 'path';
+import { URL } from 'url';
 import sane = require('sane');
 import Koa from 'koa';
 import route from 'koa-route';
@@ -9,25 +10,34 @@ import koaStatic from 'koa-static';
 import koaWebsocket = require('koa-websocket');
 import * as WebSocket from 'ws';
 import { generateProxyMiddleware } from './generateProxyMiddleware';
+import { getClientCode } from './clientTemplate';
 import { Message, MessageType } from './message';
 
-const examplePath = path.resolve(__dirname, '..', '..', 'example');
-const clientPath = path.resolve(__dirname, '..', 'client', 'client.js');
+export interface ServerOptions {
+    port: number;
+    host: string;
+    directory: string;
+}
 
-class Server {
+export class Server {
     private sockets: Set<WebSocket>;
     private app: koaWebsocket.App;
+    private options: ServerOptions;
+    private rootURL: URL;
 
-    constructor() {
+    constructor(options: ServerOptions) {
         this.sockets = new Set();
+        this.options = options;
+        this.rootURL = new URL(getURLString('http', options));
         this.app = koaWebsocket(new Koa());
     }
 
     async start() {
+        const clientCode = await getClientCode(`ws://${this.options.host}:${this.options.port}/@hmr/socket`);
         this.app.use(
             route.get('/@hmr', context => {
                 context.response.type = 'application/javascript';
-                context.response.body = fs.createReadStream(clientPath);
+                context.response.body = clientCode;
             })
         );
         this.app.ws.use(
@@ -40,19 +50,21 @@ class Server {
                 });
             })
         );
-        this.app.use(generateProxyMiddleware({ rootPath: examplePath }));
-        this.app.use(koaStatic(examplePath));
-        await this.app.listen(8080);
-
-        const watcher = sane(examplePath);
+        this.app.use(generateProxyMiddleware({ rootPath: this.options.directory }));
+        this.app.use(koaStatic(this.options.directory));
+        await this.app.listen(this.options.port, this.options.host);
+        const watcher = sane(this.options.directory);
         watcher.on('change', (filepath, root, stat) => {
             this.broadcast({
                 type: MessageType.CHANGE,
-                // TODO: generate from config
-                url: `http://localhost:8080/${filepath}`,
+                url: this.fileUrl(filepath),
                 mtime: stat.mtimeMs
             });
         });
+    }
+
+    private fileUrl(filepath: string): string {
+        return new URL(filepath, this.rootURL).href;
     }
 
     broadcast(message: Message) {
@@ -63,5 +75,6 @@ class Server {
     }
 }
 
-const server = new Server();
-server.start();
+function getURLString(protocol: string, options: ServerOptions) {
+    return `${protocol}://${options.host}:${options.port}`;
+}
