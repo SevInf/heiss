@@ -56,22 +56,42 @@ describe('module registry', () => {
 
     it('calls dispose listener during reload', async () => {
         const module = registry.registerModule(moduleUrl1, [], []);
-        const dispose = jest.fn();
-        registry.dispose(moduleUrl1, dispose);
+        const disposeMock = jest.fn();
+
+        module.reload.mockImplementation((mtime, loader, dispose) => dispose());
+        registry.dispose(moduleUrl1, disposeMock);
         registry.accept(moduleUrl1, jest.fn());
         await registry.update(moduleUrl1, 123);
 
-        expect(module.reload).toBeCalledWith(123, moduleLoader, dispose);
+        expect(disposeMock).toHaveBeenCalledTimes(1);
     });
 
     it('removes dispose listener after calling it', async () => {
         const module = registry.registerModule(moduleUrl1, [], []);
+        module.reload.mockImplementationOnce((mtime, loader, dispose) => dispose());
         registry.dispose(moduleUrl1, jest.fn());
         registry.accept(moduleUrl1, jest.fn());
+
         await registry.update(moduleUrl1, 123);
         await registry.update(moduleUrl1, 321);
 
         expect(module.reload).toHaveBeenLastCalledWith(321, moduleLoader, undefined);
+    });
+
+    it('preserves dispose listener, added during reload', async () => {
+        const module = registry.registerModule(moduleUrl1, [], []);
+
+        const disposeMock = jest.fn();
+        module.reload.mockImplementation((mtime, loader, dispose) => {
+            dispose();
+            registry.dispose(moduleUrl1, disposeMock);
+        });
+        registry.dispose(moduleUrl1, disposeMock);
+        registry.accept(moduleUrl1, jest.fn());
+        await registry.update(moduleUrl1, 123);
+        await registry.update(moduleUrl1, 321);
+
+        expect(disposeMock).toHaveBeenCalledTimes(2);
     });
 
     it('does full page reload when module reload fails', async () => {

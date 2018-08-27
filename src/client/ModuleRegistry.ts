@@ -80,9 +80,7 @@ export class ModuleRegistry {
             return ReloadResult.FAILED;
         }
 
-        const result = module.reload(mtime, this.moduleLoader, this.disposeListeners.get(moduleUrl));
-        this.disposeListeners.delete(moduleUrl);
-        return result;
+        return module.reload(mtime, this.moduleLoader, this.disposeListeners.get(moduleUrl));
     }
 
     registerModule(url: string, exportNames: string[], imports: string[], update?: ModuleUpdater): IHotModule {
@@ -108,6 +106,9 @@ export class ModuleRegistry {
     }
 
     dispose(moduleUrl: string, callback: DisposeListener) {
-        this.disposeListeners.set(moduleUrl, callback);
+        this.disposeListeners.set(moduleUrl, () => {
+            callback();
+            this.disposeListeners.delete(moduleUrl);
+        });
     }
 }
