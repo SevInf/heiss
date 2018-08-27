@@ -1,6 +1,6 @@
 {
   "name": "heiss",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Static server, which implements hot module replacement for native ES2015 modules.",
   "main": "index.js",
   "keywords": [
