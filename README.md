@@ -40,7 +40,7 @@ arguments respectively.
 
 ## HMR API
 
-API is served as `/@hmr` module. The main function you'll need is `hot`. It
+API is served as `/@hmr/api` module. The main function you'll need is `hot`. It
 accepts current module url as a parameter and returns object with the following
 methods:
 
@@ -51,7 +51,7 @@ methods:
 
   ```js
   import { init } from './init.mjs';
-  import { hot } from '/@hmr';
+  import { hot } from '/@hmr/api';
 
   init();
 
@@ -66,7 +66,7 @@ methods:
 
   ```js
   import { init } from './init.mjs';
-  import { hot } from '/@hmr';
+  import { hot } from '/@hmr/api';
 
   init();
 
@@ -78,7 +78,7 @@ methods:
 
   ```js
   import { addWidgetToDocument, removeWidgetFromDocument } from './widget.mjs';
-  import { hot } from '/@hmr';
+  import { hot } from '/@hmr/api';
 
   addWidgetToDocument();
 
