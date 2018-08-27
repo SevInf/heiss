@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.2.2"></a>
+## [0.2.2](https://github.com/SevInf/hmr-native/compare/v0.2.0...v0.2.2) (2018-08-27)
+
+
+### Bug Fixes
+
+* clenup files before publishing ([2744a01](https://github.com/SevInf/hmr-native/commit/2744a01))
+
+
+
 <a name="0.2.1"></a>
 ## [0.2.1](https://github.com/SevInf/hmr-native/compare/v0.2.0...v0.2.1) (2018-08-27)
 
