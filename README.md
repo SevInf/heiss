@@ -3,6 +3,8 @@
 Static server, which implements hot module replacement for native ES2015
 modules.
 
+[How it works](https://medium.com/@SevInf/hot-reloading-native-es2015-modules-dc54cd8cca01).
+
 **Warning**: This is an early prototype. It serves more as a playground for
 various ideas then as a finished stable tool.
 
