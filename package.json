@@ -50,7 +50,7 @@
     "acorn": "^5.7.1",
     "acorn-dynamic-import": "^3.0.0",
     "acorn-import-meta": "^0.2.1",
-    "fs-extra": "^7.0.0",
+    "fs-extra": "^8.0.0",
     "koa": "^2.5.2",
     "koa-mount": "^3.0.0",
     "koa-route": "^3.2.0",
